@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <main class="page-content">
+<div class="card-logo-container">
+    <img src="{{ asset('images/logo.png') }}" alt="Infranexia by Telkom Indonesia Logo">
+</div>
     <div class="card-container">
         <div class="card">
             <div class="form-section">
