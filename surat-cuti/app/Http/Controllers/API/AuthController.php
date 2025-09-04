@@ -14,11 +14,9 @@ class AuthController extends Controller
         ]);
 
         $karyawan = Karyawan::where('email', $request->email)->first();
-        $token = bin2hex(random_bytes(40));
 
-        $karyawan->forceFill([
-            'api_token' => hash('sha256', $token),
-        ])->save();
+        // Menggunakan Sanctum untuk membuat token
+        $token = $karyawan->createToken('auth-token')->plainTextToken;
 
         // Periksa apakah pengguna adalah admin
         if ($karyawan->is_admin) {
@@ -29,7 +27,7 @@ class AuthController extends Controller
             ]);
         }
 
-        // Ini adalah logika untuk karyawan biasa, seperti yang sudah ada
+        // Ini adalah logika untuk karyawan biasa
         return response()->json([
             'message' => 'Login Karyawan Berhasil!',
             'api_token' => $token,
@@ -56,10 +54,7 @@ class AuthController extends Controller
         }
 
         // Jika berhasil, buat token dan simpan
-        $token = bin2hex(random_bytes(40));
-        $karyawan->forceFill([
-            'api_token' => hash('sha256', $token),
-        ])->save();
+        $token = $karyawan->createToken('admin-token')->plainTextToken;
 
         return response()->json([
             'success' => true,

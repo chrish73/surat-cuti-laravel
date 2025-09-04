@@ -11,15 +11,15 @@ Route::post('login', [AuthController::class, 'login']);
 // Rute khusus untuk login Admin (harus di luar grup middleware auth)
 Route::post('login/admin', [AuthController::class, 'loginAdmin']);
 
-// Rute untuk Karyawan (dilindungi oleh middleware 'auth:api')
-Route::middleware('auth:api')->group(function () {
+// Rute untuk Karyawan (dilindungi oleh middleware 'auth:sanctum')
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('karyawan/info', [KaryawanController::class, 'getKaryawanInfo']);
     Route::post('permohonan', [KaryawanController::class, 'ajukanPermohonan']);
     Route::get('permohonan/history', [KaryawanController::class, 'getLeaveHistory']);
 });
 
-// Rute untuk Admin (dilindungi oleh middleware 'auth:api')
-Route::middleware('auth:api')->prefix('admin')->group(function () {
+// Rute untuk Admin (dilindungi oleh middleware 'auth:sanctum')
+Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('permohonan', [AdminController::class, 'index']);
     Route::post('change-status', [AdminController::class, 'changeStatus']);
     Route::post('revert-status', [AdminController::class, 'revertStatus']);
