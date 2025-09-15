@@ -1,0 +1,72 @@
+<?php
+namespace App\Http\Controllers\API;
+use App\Http\Controllers\Controller;
+use App\Models\PermohonanCuti;
+use Illuminate\Http\Request;
+
+class AdminController extends Controller
+{
+    public function index()
+    {
+        $permohonanCuti = PermohonanCuti::with('karyawan')->orderBy('created_at', 'desc')->get();
+        return response()->json($permohonanCuti);
+    }
+
+    public function getPermohonan(Request $request)
+{
+    $query = PermohonanCuti::with('karyawan');
+
+    if ($request->has('unit') && $request->unit != '') {
+        $query->whereHas('karyawan', function ($q) use ($request) {
+            $q->where('unit', $request->unit);
+        });
+    }
+
+    $permohonan = $query->get();
+    return response()->json($permohonan);
+}
+
+    public function changeStatus(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:permohonan_cuti,id',
+            'status' => 'required|in:Disetujui,Ditolak',
+        ]);
+
+        $permohonan = PermohonanCuti::findOrFail($request->id);
+        $karyawan = $permohonan->karyawan;
+
+        // Logika untuk mengurangi jatah cuti hanya jika disetujui dari status Menunggu
+        if ($permohonan->status === 'Menunggu' && $request->status === 'Disetujui' && $permohonan->jenis_cuti === 'Cuti Tahunan') {
+            if ($permohonan->durasi > $karyawan->jatah_cuti_tahunan) {
+                return response()->json(['success' => false, 'message' => 'Sisa cuti tidak mencukupi!'], 400);
+            }
+            $karyawan->jatah_cuti_tahunan -= $permohonan->durasi;
+            $karyawan->save();
+        }
+
+        $permohonan->status = $request->status;
+        $permohonan->save();
+
+        return response()->json(['success' => true, 'message' => 'Status berhasil diperbarui.']);
+    }
+
+    public function revertStatus(Request $request)
+    {
+        $request->validate(['id' => 'required|exists:permohonan_cuti,id']);
+        $permohonan = PermohonanCuti::findOrFail($request->id);
+        $karyawan = $permohonan->karyawan;
+
+        // Logika untuk mengembalikan jatah cuti hanya jika status sebelumnya adalah Disetujui
+        if ($permohonan->jenis_cuti === 'Cuti Tahunan' && $permohonan->status === 'Disetujui') {
+            $karyawan->jatah_cuti_tahunan += $permohonan->durasi;
+            $karyawan->save();
+        }
+
+        $permohonan->status = 'Menunggu';
+        $permohonan->save();
+
+        return response()->json(['success' => true, 'message' => 'Status berhasil dikembalikan.']);
+    }
+}
+

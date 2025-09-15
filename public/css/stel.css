@@ -1,0 +1,441 @@
+/* stel.css */
+/* Gaya umum untuk seluruh situs web */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    background-image: url('../images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------- */
+/* Gaya Khusus untuk Halaman Login */
+/* --------------------------------------------------------------------- */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 0;
+}
+
+.login-page .card-container {
+    padding: 20px;
+}
+
+.login-page .card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    position: relative; /* Penting: agar posisi absolut logo dihitung dari sini */
+}
+
+/* Gaya untuk logo di dalam card */
+.login-logo {
+    position: absolute;
+    top: 20px;
+    left: 85px;
+    width: 150px; /* Sesuaikan ukuran logo di sini */
+    height: auto;
+    z-index: 10;
+}
+
+.login-page .form-section {
+    margin-top: 50px; /* Memberi ruang di bagian atas untuk logo */
+}
+
+.login-page .form-section h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.login-page .form-group {
+    margin-bottom: 15px;
+}
+
+.login-page .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.login-page .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+.login-page .submit-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-page .submit-btn:hover {
+    background-color: #b32a3b;
+}
+
+/* --------------------------------------------------------------------- */
+/* Gaya untuk Halaman Admin (Dashboard) */
+/* --------------------------------------------------------------------- */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.top-left-logo {
+    position: absolute;
+    top: 20px;   /* Jarak dari atas container */
+    left: 20px;  /* Jarak dari kiri container */
+    width: 250px; /* PERBAIKI INI: Perkecil lebar logo, misalnya menjadi 60px */
+    height: auto; /* Pertahankan rasio aspek gambar */
+    z-index: 10; /* Pastikan logo berada di atas elemen lain jika ada tumpang tindih */
+}
+
+header {
+    text-align: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #333;
+    font-size: 2em;
+    position: absolute;
+    top: 10px;
+    right: 480px;
+    border-bottom: 50px;
+    padding-bottom: 50px;
+}
+
+
+h3 {
+    color: #555;
+    border-bottom: 1px solid #ddd;
+    padding-top: 70px;
+    padding-bottom: 10px;
+    font-size: 1.5em;
+}
+
+footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    color: #888;
+    font-size: 0.9em;
+}
+
+.info-text {
+    color: #666;
+    font-style: italic;
+    margin-bottom: 20px;
+    font-size: 1em;
+}
+
+/* Gaya khusus untuk halaman admin dan tabel */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    table-layout: fixed;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 1em;
+    vertical-align: middle;
+}
+
+/* Mengatur lebar kolom agar tetap konsisten dan proporsional */
+th:nth-child(1), td:nth-child(1) { width: 10%; } /* Nama Karyawan */
+th:nth-child(2), td:nth-child(2) { width: 10%; } /* ID Karyawan */
+th:nth-child(3), td:nth-child(3) { width: 10%; } /* Unit */
+th:nth-child(4), td:nth-child(4) { width: 10%; } /* Jenis Cuti */
+th:nth-child(5), td:nth-child(5) { width: 10%; } /* Sisa Cuti */
+th:nth-child(6), td:nth-child(6) { width: 10%; } /* Tgl Mulai */
+th:nth-child(7), td:nth-child(7) { width: 10%; } /* Durasi */
+th:nth-child(8), td:nth-child(8) { width: 12%; } /* Alasan Cuti */
+th:nth-child(9), td:nth-child(9) { width: 13%; } /* Status */
+th:nth-child(10), td:nth-child(10) { width: 10%; } /* Lampiran File */
+th:nth-child(11), td:nth-child(11) { width: 13%; } /* Aksi */
+th:nth-child(12), td:nth-child(12) { width: 8%; } /* Edit */
+
+
+th {
+    background-color: #f8f8f8;
+    font-weight: bold;
+    color: #555;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Gaya Status Badge */
+.status-badge {
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.status-with-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-badge.menunggu {
+    background-color: #fff3e6;
+    color: #ff9800;
+}
+
+.status-badge.disetujui {
+    background-color: #e6ffed;
+    color: #28a745;
+}
+
+.status-badge.ditolak {
+    background-color: #ffe6e6;
+    color: #dc3545;
+}
+
+/* Gaya Tombol Aksi - Ikon */
+.action-icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    font-size: 1.3em;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Penanganan ikon dengan pseudo-element */
+.action-icon-btn::before {
+    font-family: 'Arial', sans-serif;
+    font-size: 1.3em;
+}
+
+.action-icon-btn.approve::before {
+    content: '✓';
+}
+
+.action-icon-btn.reject::before {
+    content: '✕';
+}
+
+.action-icon-btn.edit::before {
+    content: '✎';
+}
+
+.action-icon-btn.info::before {
+    content: 'ⓘ';
+}
+
+.action-icon-btn.file::before {
+    content: '📄';
+}
+
+/* Gaya baru untuk grup tombol */
+.action-buttons-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.action-icon-btn.approve {
+    background-color: #28a745;
+}
+
+.action-icon-btn.reject {
+    background-color: #dc3545;
+}
+
+.action-icon-btn.edit {
+    background-color: #6c757d;
+}
+
+.action-icon-btn.info {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.action-icon-btn.file {
+    background-color: #666;
+    color: #fff;
+}
+
+.action-icon-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+}
+
+.action-icon-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tindakan-selesai {
+    color: #666;
+    font-style: italic;
+    font-size: 1em;
+}
+
+/* POP-UP NOTIFIKASI */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.popup-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.popup-content {
+    background: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    max-width: 1000px;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+.popup-overlay.show .popup-content {
+    transform: scale(1);
+}
+
+.popup-icon {
+    font-size: 3.5em;
+    margin-bottom: 20px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 20px auto;
+    color: #fff;
+}
+
+/* Penanganan ikon pop-up dengan pseudo-element */
+.popup-icon.success {
+    background-color: #28a745;
+}
+
+.popup-icon.success::before {
+    content: '✓';
+}
+
+.popup-icon.error {
+    background-color: #dc3545;
+}
+
+.popup-icon.error::before {
+    content: '✕';
+}
+
+.popup-icon.info {
+    background-color: #007bff;
+}
+
+.popup-icon.info::before {
+    content: 'ⓘ';
+}
+
+#popup-title {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+#popup-message {
+    font-size: 1.2em;
+    color: #666;
+    margin-bottom: 25px;
+    text-align: left;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+#popup-close-btn {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    min-width: 150px; /* Give the button a consistent width */
+    border: none;
+    transition: background-color 0.3s ease;
+
+    /* These properties will center the button */
+    display: block; /* Make it a block-level element */
+    margin: 20px auto 0 auto; /* Set margin-left and margin-right to 'auto' to center it */
+}
+
+#popup-close-btn:hover {
+    background-color: #0056b3;
+    transform: none;
+}
