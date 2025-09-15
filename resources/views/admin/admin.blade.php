@@ -18,7 +18,8 @@
 
     <main>
         <h3>Permohonan Cuti Baru</h3>
-        <p class="info-text">Kelola permohonan cuti langsung dari tabel di bawah ini.</p>
+        {{-- <p class="info-text">Kelola permohonan cuti langsung dari tabel di bawah ini.</p> --}}
+        <p class="info-text">Pilih terlebih dahulu unit yang ingin diexport (Default : Semua Unit)!</p>
 
         <div class="filter-container">
     <label for="unit-filter">Filter Berdasarkan Unit:</label>
@@ -34,6 +35,7 @@
         <option value="HD DEFA">HD DEFA</option>
         <option value="Wifi">Wifi</option>
     </select>
+    <button id="export-excel-btn" class="action-btn">Ekspor ke Excel</button>
 </div>
 
         <div class="table-container">

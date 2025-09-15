@@ -39,5 +39,14 @@ class KaryawanSeeder extends Seeder
             'is_admin' => false,
             // Kolom password dikosongkan karena bersifat nullable
         ]);
+
+        Karyawan::create([
+            'nama' => 'Gepol',
+            'id_karyawan' => '87654321',
+            'unit' => 'Service Node',
+            'email' => 'gepol@gmail.com',
+            'is_admin' => false,
+            // Kolom password dikosongkan karena bersifat nullable
+        ]);
     }
 }

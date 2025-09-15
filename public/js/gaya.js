@@ -3,7 +3,7 @@
 // Fungsi untuk memuat data permohonan dari API
 const loadRequests = async (unitFilter = '') => {
     const tableBody = document.getElementById('request-list');
-    tableBody.innerHTML = '<tr><td colspan="11">Memuat data...</td></tr>'; // Ubah colspan menjadi 11
+    tableBody.innerHTML = '<tr><td colspan="11">Memuat data...</td></tr>';
 
     try {
         const token = sessionStorage.getItem('api_token');
@@ -11,7 +11,7 @@ const loadRequests = async (unitFilter = '') => {
         if (unitFilter) {
             apiUrl += `?unit=${unitFilter}`;
         }
-        
+
         const response = await fetch(apiUrl, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -24,7 +24,7 @@ const loadRequests = async (unitFilter = '') => {
         tableBody.innerHTML = '';
 
         if (requests.length === 0) {
-             tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;">Tidak ada permohonan cuti.</td></tr>'; // Ubah colspan menjadi 11
+             tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;">Tidak ada permohonan cuti.</td></tr>';
              return;
         }
 
@@ -83,7 +83,7 @@ const revertStatus = async (id) => {
             body: JSON.stringify({ id: id })
         });
         const result = await response.json();
-        
+
         if (response.ok) {
             showNotificationPopup('info', result.message || 'Status berhasil dikembalikan!');
             loadRequests();
@@ -124,7 +124,11 @@ const changeStatus = async (id, newStatus) => {
 
 // Fungsi untuk melihat file
 const viewFile = (fileName) => {
-    showNotificationPopup('info', `Simulasi: Membuka file ${fileName}`);
+    const token = sessionStorage.getItem('api_token');
+    const fileUrl = `/api/admin/view-file/${fileName}`;
+
+    // Buka di tab baru
+    window.open(fileUrl, '_blank');
 };
 
 // Fungsi untuk menampilkan pop-up dengan detail alasan dan alamat
@@ -200,18 +204,63 @@ window.showNotificationPopup = (type, message) => {
 document.addEventListener('DOMContentLoaded', () => {
     const isAdmin = sessionStorage.getItem('is_admin');
     const token = sessionStorage.getItem('api_token');
+    const unitFilterSelect = document.getElementById('unit-filter');
+    const exportButton = document.getElementById('export-excel-btn');
 
     if (!token || isAdmin !== 'true') {
         window.location.href = '/admin/login';
         return;
     }
-    
+
     loadRequests();
 
-    const unitFilterSelect = document.getElementById('unit-filter');
     if (unitFilterSelect) {
         unitFilterSelect.addEventListener('change', (event) => {
             loadRequests(event.target.value);
+        });
+    }
+
+    if (exportButton) {
+        exportButton.addEventListener('click', async () => {
+            const unitFilter = unitFilterSelect.value;
+            const token = sessionStorage.getItem('api_token');
+            let exportUrl = `/api/admin/export-permohonan`;
+            if (unitFilter) {
+                exportUrl += `?unit=${unitFilter}`;
+            }
+
+            try {
+                const response = await fetch(exportUrl, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Mendapatkan nama file dari header Content-Disposition
+                const contentDisposition = response.headers.get('Content-Disposition');
+                const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+                const fileName = fileNameMatch ? fileNameMatch[1] : 'riwayat_cuti.csv';
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = fileName; // Gunakan nama file yang dinamis dari server
+
+                document.body.appendChild(a);
+                a.click();
+
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                showNotificationPopup('success', 'File berhasil diunduh!');
+            } catch (error) {
+                console.error('Error during export:', error);
+                showNotificationPopup('error', 'Gagal mengunduh file. Mohon coba lagi.');
+            }
         });
     }
 });

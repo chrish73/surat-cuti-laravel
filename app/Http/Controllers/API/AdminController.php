@@ -3,28 +3,79 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\PermohonanCuti;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
 
 class AdminController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $permohonanCuti = PermohonanCuti::with('karyawan')->orderBy('created_at', 'desc')->get();
+        $query = PermohonanCuti::with('karyawan');
+
+        if ($request->has('unit') && $request->unit != '') {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('unit', $request->unit);
+            });
+        }
+
+        $permohonanCuti = $query->orderBy('created_at', 'desc')->get();
         return response()->json($permohonanCuti);
     }
 
-    public function getPermohonan(Request $request)
-{
-    $query = PermohonanCuti::with('karyawan');
+    public function exportToExcel(Request $request)
+    {
+        $query = PermohonanCuti::with('karyawan');
 
-    if ($request->has('unit') && $request->unit != '') {
-        $query->whereHas('karyawan', function ($q) use ($request) {
-            $q->where('unit', $request->unit);
-        });
+        if ($request->has('unit') && $request->unit != '') {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('unit', $request->unit);
+            });
+        }
+
+        $permohonanCuti = $query->orderBy('created_at', 'desc')->get();
+
+        $timestamp = now()->format('d-m-Y');
+        $fileName = 'Riwayat cuti karyawan Telkom_' . $timestamp . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ];
+
+        $callback = function() use ($permohonanCuti) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, [
+                'Nama Karyawan',
+                'ID Karyawan',
+                'Unit',
+                'Jenis Cuti',
+                'Tanggal Mulai',
+                'Tanggal Selesai',
+                'Durasi (Hari)',
+                'Alasan',
+                'Alamat Cuti',
+                'Status'
+            ]);
+
+            foreach ($permohonanCuti as $permohonan) {
+                fputcsv($file, [
+                    $permohonan->karyawan->nama ?? '',
+                    $permohonan->karyawan->id_karyawan ?? '',
+                    $permohonan->karyawan->unit ?? '',
+                    $permohonan->jenis_cuti,
+                    $permohonan->tanggal_mulai,
+                    $permohonan->tanggal_selesai,
+                    $permohonan->durasi,
+                    $permohonan->alasan,
+                    $permohonan->alamat_selama_cuti,
+                    $permohonan->status
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->streamDownload($callback, $fileName, $headers);
     }
-
-    $permohonan = $query->get();
-    return response()->json($permohonan);
-}
 
     public function changeStatus(Request $request)
     {
@@ -68,5 +119,16 @@ class AdminController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Status berhasil dikembalikan.']);
     }
-}
 
+
+    public function viewFile(Request $request, $fileName)
+    {
+        $filePath = 'public/' . $fileName;
+
+        if (Storage::exists($filePath)) {
+            return response()->file(Storage::path($filePath));
+        }
+
+        return response()->json(['message' => 'File tidak ditemukan.'], 404);
+    }
+}

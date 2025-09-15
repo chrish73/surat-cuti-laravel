@@ -25,7 +25,8 @@ class KaryawanController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'alasan' => 'required',
-            'alamat' => 'required'
+            'alamat' => 'required',
+            'lampiran_file' => 'nullable|file|max:2048' // Aturan validasi baru untuk file (max: 2MB)
         ]);
 
         $durasi = (new \Carbon\Carbon($request->tanggal_mulai))->diffInDays(new \Carbon\Carbon($request->tanggal_selesai)) + 1;
@@ -37,6 +38,11 @@ class KaryawanController extends Controller
             }
         }
 
+        $filePath = null;
+        if ($request->hasFile('lampiran_file')) {
+            $filePath = $request->file('lampiran_file')->store('lampiran_cuti', 'public');
+        }
+
         PermohonanCuti::create([
             'karyawan_id' => $request->user()->id,
             'jenis_cuti' => $request->jenis_cuti,
@@ -45,6 +51,7 @@ class KaryawanController extends Controller
             'durasi' => $durasi,
             'alasan' => $request->alasan,
             'alamat_selama_cuti' => $request->alamat,
+            'lampiran_file' => $filePath,
         ]);
 
         return response()->json(['message' => 'Permohonan berhasil diajukan!']);

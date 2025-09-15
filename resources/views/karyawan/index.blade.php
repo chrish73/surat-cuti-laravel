@@ -13,7 +13,7 @@
         <div class="card-logo-container">
             <img src="{{ asset('images/logo.png') }}" alt="Infranexia by Telkom Indonesia Logo">
         </div>
-        
+
         <div class="card-container">
             <div class="card">
                 <div class="employee-info">
@@ -35,10 +35,10 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="form-section">
                     <h2>Permohonan Cuti</h2>
-                    <form id="leave-form">
+                    <form id="leave-form" enctype="multipart/form-data">
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="leave-type">Jenis Cuti</label>
@@ -90,7 +90,7 @@
                         <button type="submit" class="submit-btn">Ajukan Permohonan</button>
                     </form>
                 </div>
-                
+
                 <div id="popup-success" class="popup-modal">
                     <div class="popup-content">
                         <div class="icon-container">
@@ -100,7 +100,7 @@
                         <p>Mohon tunggu persetujuan dari atasan Anda.</p>
                     </div>
                 </div>
-                
+
                 <div id="popup-pending" class="popup-modal">
                     <div class="popup-content">
                         <div class="icon-container">
@@ -113,9 +113,9 @@
 
                 <div class="history-section">
                     <h2>Riwayat Cuti</h2>
-                    
+
                     <h3>Cuti Tahunan</h3>
-                    
+
                     <div class="leave-table-container">
                         <table class="history-table annual-leave-table">
                             <thead>
@@ -138,9 +138,9 @@
                         </table>
                     </div>
                     <br>
-                    
+
                     <h3>Cuti Lainnya</h3>
-                    
+
                     <div class="leave-table-container">
                         <table class="history-table other-leave-table">
                             <thead>

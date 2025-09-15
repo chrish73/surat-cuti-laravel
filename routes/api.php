@@ -23,4 +23,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('permohonan', [AdminController::class, 'index']);
     Route::post('change-status', [AdminController::class, 'changeStatus']);
     Route::post('revert-status', [AdminController::class, 'revertStatus']);
+    // Rute baru untuk ekspor ke Excel
+    Route::get('export-permohonan', [AdminController::class, 'exportToExcel']);
+    Route::get('view-file/{fileName}', [AdminController::class, 'viewFile']); 
 });
