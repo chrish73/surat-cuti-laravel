@@ -99,7 +99,7 @@
     </div>
 
     <div class="signature">
-        <p>Jakarta, {{ $tanggal_cetak }}</p>
+        <p>Medan, {{ $tanggal_cetak }}</p>
         <p>Hormat Kami,</p>
         <p style="margin-top: 60px;">(Nama Admin)</p>
         <p>Jabatan</p>

@@ -117,44 +117,46 @@
 
                     <h3>Cuti Tahunan</h3>
 
-                    <div class="leave-table-container">
-                        <table class="history-table annual-leave-table">
-                            <thead>
-                                <tr>
-                                    <th>Tanggal Pengajuan</th>
-                                    <th>Tanggal Mulai</th>
-                                    <th>Tanggal Selesai</th>
-                                    <th>Durasi (Hari)</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="annual-leave-body"></tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="3"><strong>Sisa Cuti Tahunan:</strong></td>
-                                    <td id="annual-leave-remaining">12 Hari</td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                    <br>
+                <div class="leave-table-container">
+                    <table class="history-table annual-leave-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal Pengajuan</th>
+                                <th>Tanggal Mulai</th>
+                                <th>Tanggal Selesai</th>
+                                <th>Durasi (Hari)</th>
+                                <th>Status</th>
+                                <th>Surat Persetujuan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="annual-leave-body"></tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"><strong>Sisa Cuti Tahunan:</strong></td>
+                                <td id="annual-leave-remaining">12 Hari</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
 
-                    <h3>Cuti Lainnya</h3>
+                <h3>Cuti Lainnya</h3>
 
-                    <div class="leave-table-container">
-                        <table class="history-table other-leave-table">
-                            <thead>
-                                <tr>
-                                    <th>Jenis Cuti</th>
-                                    <th>Tanggal Mulai</th>
-                                    <th>Tanggal Selesai</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="other-leave-body"></tbody>
-                        </table>
-                    </div>
+                <div class="leave-table-container">
+                    <table class="history-table other-leave-table">
+                        <thead>
+                            <tr>
+                                <th>Jenis Cuti</th>
+                                <th>Tanggal Mulai</th>
+                                <th>Tanggal Selesai</th>
+                                <th>Status</th>
+                                <th>Surat Persetujuan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="other-leave-body"></tbody>
+                    </table>
+                </div>
                     </div>
             </div>
         </div>
