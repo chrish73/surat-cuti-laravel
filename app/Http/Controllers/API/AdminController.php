@@ -121,14 +121,14 @@ class AdminController extends Controller
     }
 
 
-    public function viewFile(Request $request, $fileName)
-    {
-        $filePath = 'public/' . $fileName;
+    // public function viewFile(Request $request, $fileName)
+    // {
+    //     $filePath = 'public/' . $fileName;
 
-        if (Storage::exists($filePath)) {
-            return response()->file(Storage::path($filePath));
-        }
+    //     if (Storage::exists($filePath)) {
+    //         return response()->file(Storage::path($filePath));
+    //     }
 
-        return response()->json(['message' => 'File tidak ditemukan.'], 404);
-    }
+    //     return response()->json(['message' => 'File tidak ditemukan.'], 404);
+    // }
 }

@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const fileUploadGroup = document.getElementById('file-upload-group');
     const fileNameDisplay = document.getElementById('file-name-display');
     const leaveForm = document.getElementById('leave-form');
+    // Tambahkan referensi elemen untuk keterangan cuti
     const leaveSummaryNote = document.getElementById('leave-summary-note');
 
     const annualLeaveBody = document.getElementById('annual-leave-body');
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let annualLeaveQuota = 12;
     let leaveHistory = [];
-    let hasPendingApplication = false;
+    let hasPendingApplication = false; // Status untuk melacak permohonan yang menunggu
 
     // Mengambil data sisa cuti dan riwayat dari API
     const fetchEmployeeData = async () => {
@@ -75,6 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     })
                 }));
                 updateLeaveHistoryTables();
+                // Memeriksa apakah ada permohonan yang menunggu
                 hasPendingApplication = leaveHistory.some(leave => leave.status === 'menunggu');
             } else {
                 console.error('Failed to fetch leave history:', data.message);
@@ -170,34 +172,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         return Math.floor(diffInDays) + 1;
     }
 
-    // Fungsi baru untuk memperbarui teks keterangan cuti
-    const updateLeaveSummary = () => {
-        const leaveType = leaveTypeSelect.value;
-        const startDateValue = startDateInput.value;
-        const endDateValue = endDateInput.value;
+// Fungsi baru untuk memperbarui teks keterangan cuti
+const updateLeaveSummary = () => {
+    const leaveType = leaveTypeSelect.value;
+    const startDateValue = startDateInput.value;
+    const endDateValue = endDateInput.value;
 
-        if (leaveType && startDateValue && endDateValue) {
-            const days = calculateDays(startDateValue, endDateValue);
-            const formattedStartDate = new Date(startDateValue).toLocaleDateString('id-ID');
-            const formattedEndDate = new Date(endDateValue).toLocaleDateString('id-ID');
+    if (leaveType && startDateValue && endDateValue) {
+        const days = calculateDays(startDateValue, endDateValue);
+        const formattedStartDate = new Date(startDateValue).toLocaleDateString('id-ID');
+        const formattedEndDate = new Date(endDateValue).toLocaleDateString('id-ID');
 
-            let summaryText = `[Mengambil ${leaveType} selama ${days} hari, dari ${formattedStartDate} hingga ${formattedEndDate}.]`;
+        // Kalimat ini akan berlaku untuk semua jenis cuti
+        let summaryText = `[Mengambil ${leaveType} selama ${days} hari, dari ${formattedStartDate} hingga ${formattedEndDate}.]`;
 
-            if (leaveType === 'Cuti Tahunan') {
-                if (days > 3) {
-                    summaryText = `<span style="color: red;">Durasi Cuti Tahunan tidak boleh lebih dari 3 hari.</span>`;
-                }
-            } else if (leaveType === 'Cuti Lahiran') {
-                if (days !== 90) {
-                    summaryText = `<span style="color: red;">Cuti Lahiran harus 90 hari.</span>`;
-                }
+        // Validasi khusus untuk cuti tahunan tetap dipertahankan
+        if (leaveType === 'Cuti Tahunan') {
+            if (days > 3) {
+                summaryText = `<span style="color: red;">Durasi Cuti Tahunan tidak boleh lebih dari 3 hari.</span>`;
             }
-
-            leaveSummaryNote.innerHTML = summaryText;
-        } else {
-            leaveSummaryNote.textContent = '';
+        } else if (leaveType === 'Cuti Lahiran') {
+            if (days !== 90) { // Cuti Lahiran 3 bulan (sekitar 90 hari)
+                summaryText = `<span style="color: red;">Cuti Lahiran harus 90 hari.</span>`;
+            }
         }
-    };
+
+        leaveSummaryNote.innerHTML = summaryText;
+    } else {
+        leaveSummaryNote.textContent = ''; // Hapus teks jika input tidak lengkap
+    }
+};
 
     const setStartDateLimit = () => {
         const today = new Date();
@@ -270,7 +274,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     startDateInput.addEventListener('change', setEndDateLimit);
     leaveTypeSelect.addEventListener('change', setEndDateLimit);
-    endDateInput.addEventListener('change', updateLeaveSummary);
+    endDateInput.addEventListener('change', updateLeaveSummary); // Tambahkan event listener untuk Tanggal Selesai
 
     leaveForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -287,21 +291,57 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        // Gunakan FormData untuk mengirim data formulir, termasuk file
-        const formData = new FormData(leaveForm);
+        const nameFromStorage = sessionStorage.getItem('employeeName');
+        const idFromStorage = sessionStorage.getItem('employeeId');
+        const unitFromStorage = sessionStorage.getItem('employeeUnit');
+
+        if (!leaveTypeSelect.value || !startDateInput.value || !endDateInput.value || !reasonTextarea.value || !addressTextarea.value || !nameFromStorage || !idFromStorage || !unitFromStorage) {
+            alert('Semua bidang harus diisi!');
+            return;
+        }
+
+        const leaveType = leaveTypeSelect.value;
+        const days = calculateDays(startDateInput.value, endDateInput.value);
+
+        if (leaveType === 'Cuti Tahunan') {
+            if (days > 3) {
+                alert('Durasi Cuti Tahunan tidak boleh lebih dari 3 hari.');
+                return;
+            }
+            const today = new Date();
+            const minDateForAnnualLeave = new Date(today);
+            minDateForAnnualLeave.setDate(today.getDate() + 29);
+            if (new Date(startDateInput.value) < minDateForAnnualLeave) {
+                alert('Cuti Tahunan hanya bisa diajukan minimal 30 hari dari hari ini.');
+                return;
+            }
+            if (annualLeaveQuota - days < 0) {
+                alert('Sisa cuti tahunan tidak mencukupi.');
+                return;
+            }
+        }
+
+        const formData = {
+            jenis_cuti: leaveType,
+            tanggal_mulai: startDateInput.value,
+            tanggal_selesai: endDateInput.value,
+            alasan: reasonTextarea.value,
+            alamat: addressTextarea.value,
+            file: fileAttachInput.files[0]
+        };
 
         try {
             const token = sessionStorage.getItem('api_token');
             const response = await fetch('/api/permohonan', {
                 method: 'POST',
                 headers: {
+                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: formData, // Kirim objek FormData
+                body: JSON.stringify(formData)
             });
 
             const result = await response.json();
-
             if (response.ok) {
                 popupModalSuccess.style.display = 'flex';
                 setTimeout(() => { popupModalSuccess.classList.add('show'); }, 10);

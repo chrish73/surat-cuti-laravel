@@ -124,11 +124,7 @@ const changeStatus = async (id, newStatus) => {
 
 // Fungsi untuk melihat file
 const viewFile = (fileName) => {
-    const token = sessionStorage.getItem('api_token');
-    const fileUrl = `/api/admin/view-file/${fileName}`;
-
-    // Buka di tab baru
-    window.open(fileUrl, '_blank');
+    showNotificationPopup('info', `Simulasi: Membuka file ${fileName}`);
 };
 
 // Fungsi untuk menampilkan pop-up dengan detail alasan dan alamat
