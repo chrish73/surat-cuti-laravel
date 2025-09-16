@@ -16,6 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('karyawan/info', [KaryawanController::class, 'getKaryawanInfo']);
     Route::post('permohonan', [KaryawanController::class, 'ajukanPermohonan']);
     Route::get('permohonan/history', [KaryawanController::class, 'getLeaveHistory']);
+    Route::get('permohonan/download-surat/{id}', [KaryawanController::class, 'downloadSuratPersetujuan']); // Tambahkan baris ini
 });
 
 // Rute untuk Admin (dilindungi oleh middleware 'auth:sanctum')

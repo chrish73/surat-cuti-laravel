@@ -3,8 +3,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PermohonanCuti;
-use App\Models\Karyawan; // Import model Karyawan
-
+use App\Models\Karyawan;
+use Barryvdh\DomPDF\Facade\Pdf;
 class KaryawanController extends Controller
 {
     public function getKaryawanInfo(Request $request)
@@ -48,5 +48,25 @@ class KaryawanController extends Controller
         ]);
 
         return response()->json(['message' => 'Permohonan berhasil diajukan!']);
+    }
+
+    public function downloadSuratPersetujuan(Request $request, $id)
+    {
+        $permohonan = PermohonanCuti::with('karyawan')->find($id);
+
+        if (!$permohonan || $permohonan->karyawan->id !== $request->user()->id || $permohonan->status !== 'Disetujui') {
+            return response()->json(['message' => 'Surat tidak ditemukan atau belum disetujui.'], 404);
+        }
+
+        $data = [
+            'permohonan' => $permohonan,
+            'karyawan' => $permohonan->karyawan,
+            'tanggal_cetak' => now()->format('d F Y')
+        ];
+
+        $pdf = PDF::loadView('surat-persetujuan-cuti', $data);
+
+        $fileName = 'Surat_Persetujuan_Cuti_' . $permohonan->karyawan->id_karyawan . '_' . $permohonan->tanggal_mulai . '.pdf';
+        return $pdf->download($fileName);
     }
 }
