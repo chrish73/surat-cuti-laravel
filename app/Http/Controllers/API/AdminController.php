@@ -1,10 +1,12 @@
 <?php
 namespace App\Http\Controllers\API;
+
 use App\Http\Controllers\Controller;
 use App\Models\PermohonanCuti;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-
+use Illuminate\Support\Facades\Mail; // Tambahkan ini
+use App\Mail\StatusCutiNotification; // Tambahkan ini
 
 class AdminController extends Controller
 {
@@ -99,7 +101,12 @@ class AdminController extends Controller
         $permohonan->status = $request->status;
         $permohonan->save();
 
-        return response()->json(['success' => true, 'message' => 'Status berhasil diperbarui.']);
+        // Kirim notifikasi email setelah status diperbarui
+        if ($karyawan) {
+            Mail::to($karyawan->email)->send(new StatusCutiNotification($permohonan));
+        }
+
+        return response()->json(['success' => true, 'message' => 'Status berhasil diperbarui dan notifikasi email telah dikirim.']);
     }
 
     public function revertStatus(Request $request)
@@ -119,7 +126,6 @@ class AdminController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Status berhasil dikembalikan.']);
     }
-
 
     // public function viewFile(Request $request, $fileName)
     // {

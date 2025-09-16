@@ -44,7 +44,7 @@ class KaryawanSeeder extends Seeder
             'nama' => 'Gepol',
             'id_karyawan' => '87654321',
             'unit' => 'Service Node',
-            'email' => 'gepol@gmail.com',
+            'email' => 'chriselngongo@gmail.com',
             'is_admin' => false,
             // Kolom password dikosongkan karena bersifat nullable
         ]);
