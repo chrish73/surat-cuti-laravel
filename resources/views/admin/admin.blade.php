@@ -13,7 +13,7 @@
     <img src="{{ asset('images/logo.png') }}" alt="Logo Perusahaan" class="top-left-logo">
 
     <header>
-        <h2>Dashboard Admin Cuti</h2>
+        <h2>Data cuti karyawan</h2>
     </header>
 
     <main>

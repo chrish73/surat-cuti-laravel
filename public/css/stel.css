@@ -4,7 +4,7 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f9;
-    background-image: url('../images/background.png');
+    background-image: url("../images/background.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -106,14 +106,14 @@ body {
     background: rgba(255, 255, 255, 0.9);
     padding: 40px;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     position: relative;
 }
 
 .top-left-logo {
     position: absolute;
-    top: 20px;   /* Jarak dari atas container */
-    left: 20px;  /* Jarak dari kiri container */
+    top: 20px; /* Jarak dari atas container */
+    left: 20px; /* Jarak dari kiri container */
     width: 250px; /* PERBAIKI INI: Perkecil lebar logo, misalnya menjadi 60px */
     height: auto; /* Pertahankan rasio aspek gambar */
     z-index: 10; /* Pastikan logo berada di atas elemen lain jika ada tumpang tindih */
@@ -135,7 +135,6 @@ h2 {
     border-bottom: 50px;
     padding-bottom: 50px;
 }
-
 
 h3 {
     color: #555;
@@ -173,7 +172,8 @@ table {
     table-layout: fixed;
 }
 
-th, td {
+th,
+td {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #ddd;
@@ -182,19 +182,54 @@ th, td {
 }
 
 /* Mengatur lebar kolom agar tetap konsisten dan proporsional */
-th:nth-child(1), td:nth-child(1) { width: 10%; } /* Nama Karyawan */
-th:nth-child(2), td:nth-child(2) { width: 10%; } /* ID Karyawan */
-th:nth-child(3), td:nth-child(3) { width: 10%; } /* Unit */
-th:nth-child(4), td:nth-child(4) { width: 10%; } /* Jenis Cuti */
-th:nth-child(5), td:nth-child(5) { width: 10%; } /* Sisa Cuti */
-th:nth-child(6), td:nth-child(6) { width: 10%; } /* Tgl Mulai */
-th:nth-child(7), td:nth-child(7) { width: 10%; } /* Durasi */
-th:nth-child(8), td:nth-child(8) { width: 12%; } /* Alasan Cuti */
-th:nth-child(9), td:nth-child(9) { width: 13%; } /* Status */
-th:nth-child(10), td:nth-child(10) { width: 10%; } /* Lampiran File */
-th:nth-child(11), td:nth-child(11) { width: 13%; } /* Aksi */
-th:nth-child(12), td:nth-child(12) { width: 8%; } /* Edit */
-
+th:nth-child(1),
+td:nth-child(1) {
+    width: 10%;
+} /* Nama Karyawan */
+th:nth-child(2),
+td:nth-child(2) {
+    width: 10%;
+} /* ID Karyawan */
+th:nth-child(3),
+td:nth-child(3) {
+    width: 10%;
+} /* Unit */
+th:nth-child(4),
+td:nth-child(4) {
+    width: 10%;
+} /* Jenis Cuti */
+th:nth-child(5),
+td:nth-child(5) {
+    width: 10%;
+} /* Sisa Cuti */
+th:nth-child(6),
+td:nth-child(6) {
+    width: 10%;
+} /* Tgl Mulai */
+th:nth-child(7),
+td:nth-child(7) {
+    width: 10%;
+} /* Durasi */
+th:nth-child(8),
+td:nth-child(8) {
+    width: 12%;
+} /* Alasan Cuti */
+th:nth-child(9),
+td:nth-child(9) {
+    width: 13%;
+} /* Status */
+th:nth-child(10),
+td:nth-child(10) {
+    width: 10%;
+} /* Lampiran File */
+th:nth-child(11),
+td:nth-child(11) {
+    width: 13%;
+} /* Aksi */
+th:nth-child(12),
+td:nth-child(12) {
+    width: 8%;
+} /* Edit */
 
 th {
     background-color: #f8f8f8;
@@ -239,8 +274,8 @@ tr:hover {
 
 /* Gaya Tombol Aksi - Ikon */
 .action-icon-btn {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     display: inline-flex;
     align-items: center;
@@ -256,28 +291,28 @@ tr:hover {
 
 /* Penanganan ikon dengan pseudo-element */
 .action-icon-btn::before {
-    font-family: 'Arial', sans-serif;
+    font-family: "Arial", sans-serif;
     font-size: 1.3em;
 }
 
 .action-icon-btn.approve::before {
-    content: '✓';
+    content: "✓";
 }
 
 .action-icon-btn.reject::before {
-    content: '✕';
+    content: "✕";
 }
 
 .action-icon-btn.edit::before {
-    content: '✎';
+    content: "✎";
 }
 
 .action-icon-btn.info::before {
-    content: 'ⓘ';
+    content: "📄";
 }
 
 .action-icon-btn.file::before {
-    content: '📄';
+    content: "🧾";
 }
 
 /* Gaya baru untuk grup tombol */
@@ -300,7 +335,7 @@ tr:hover {
 }
 
 .action-icon-btn.info {
-    background-color: #007bff;
+    /* background-color: #ffffff; */
     color: #fff;
 }
 
@@ -381,7 +416,7 @@ tr:hover {
 }
 
 .popup-icon.success::before {
-    content: '✓';
+    content: "✓";
 }
 
 .popup-icon.error {
@@ -389,7 +424,7 @@ tr:hover {
 }
 
 .popup-icon.error::before {
-    content: '✕';
+    content: "✕";
 }
 
 .popup-icon.info {
@@ -397,7 +432,7 @@ tr:hover {
 }
 
 .popup-icon.info::before {
-    content: 'ⓘ';
+    content: "ⓘ";
 }
 
 #popup-title {
@@ -425,7 +460,7 @@ tr:hover {
     border-radius: 5px;
     cursor: pointer;
     font-size: 1.1em;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     min-width: 150px; /* Give the button a consistent width */
     border: none;
     transition: background-color 0.3s ease;

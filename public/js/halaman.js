@@ -1,3 +1,5 @@
+//halaman.js (untuk login dari karyawan)
+
 document.addEventListener('DOMContentLoaded', () => {
     const infoForm = document.getElementById('info-form');
     infoForm.addEventListener('submit', async (e) => {
