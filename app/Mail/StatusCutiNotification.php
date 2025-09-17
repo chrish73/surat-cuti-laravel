@@ -42,6 +42,8 @@ class StatusCutiNotification extends Mailable
             view: 'emails.status_cuti',
             with: [
                 'permohonan' => $this->permohonan,
+                // Tambahkan alasan penolakan secara eksplisit ke view
+                'alasan_penolakan' => $this->permohonan->alasan_penolakan,
             ],
         );
     }

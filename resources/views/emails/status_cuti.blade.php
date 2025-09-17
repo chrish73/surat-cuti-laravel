@@ -11,8 +11,8 @@
     <p>Kami ingin memberitahukan bahwa permohonan cuti Anda untuk jenis cuti <strong>{{ $permohonan->jenis_cuti }}</strong> dengan tanggal mulai <strong>{{ $permohonan->tanggal_mulai }}</strong> dan tanggal selesai <strong>{{ $permohonan->tanggal_selesai }}</strong> telah diperbarui.</p>
     <p>Status terbaru: <strong>{{ $permohonan->status }}</strong></p>
 
-    @if ($permohonan->status === 'Ditolak' && $permohonan->alasan_penolakan)
-        <p>Alasan penolakan: <strong>{{ $permohonan->alasan_penolakan }}</strong></p>
+    @if ($permohonan->status === 'Ditolak' && $alasan_penolakan)
+        <p>Alasan penolakan: <strong>{{ $alasan_penolakan }}</strong></p>
     @endif
 
     <p>Terima kasih.</p>

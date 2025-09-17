@@ -161,4 +161,5 @@ class AdminController extends Controller
 
         return response()->json(['message' => 'Permohonan berhasil ditolak.']);
     }
+
 }
