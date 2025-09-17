@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\Mail; // Tambahkan ini
 use App\Mail\StatusCutiNotification; // Tambahkan ini
+use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
 {
@@ -137,4 +138,27 @@ class AdminController extends Controller
 
     //     return response()->json(['message' => 'File tidak ditemukan.'], 404);
     // }
+
+        public function rejectPermohonan(Request $request, $id)
+    {
+        try {
+            $request->validate(['alasan_penolakan' => 'required|string']);
+        } catch (ValidationException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+
+        $permohonan = PermohonanCuti::with('karyawan')->find($id);
+
+        if (!$permohonan || $permohonan->status !== 'Menunggu') {
+            return response()->json(['message' => 'Permohonan tidak ditemukan atau tidak dalam status Menunggu.'], 404);
+        }
+
+        $permohonan->status = 'Ditolak';
+        $permohonan->alasan_penolakan = $request->alasan_penolakan;
+        $permohonan->save();
+
+        Mail::to($permohonan->karyawan->email)->send(new StatusCutiNotification($permohonan));
+
+        return response()->json(['message' => 'Permohonan berhasil ditolak.']);
+    }
 }

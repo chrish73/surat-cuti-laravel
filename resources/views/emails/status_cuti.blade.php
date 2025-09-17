@@ -1,23 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Pemberitahuan Status Cuti</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifikasi Cuti</title>
 </head>
 <body>
-    <h1>Pemberitahuan Status Permohonan Cuti Anda</h1>
-    <p>Yth. {{ $permohonan->karyawan->nama_karyawan }},</p>
-    <p>Kami ingin memberitahukan bahwa permohonan cuti Anda telah **{{ $permohonan->status }}**.</p>
-    <p>Berikut adalah detail permohonan Anda:</p>
-    <ul>
-        <li>**Tanggal Pengajuan:** {{ \Carbon\Carbon::parse($permohonan->tanggal_pengajuan)->translatedFormat('d F Y') }}</li>
-        <li>**Tanggal Mulai:** {{ \Carbon\Carbon::parse($permohonan->tanggal_mulai_cuti)->translatedFormat('d F Y') }}</li>
-        <li>**Tanggal Selesai:** {{ \Carbon\Carbon::parse($permohonan->tanggal_selesai_cuti)->translatedFormat('d F Y') }}</li>
-        <li>**Alasan:** {{ $permohonan->alasan_cuti }}</li>
-        <li>**Status:** {{ $permohonan->status }}</li>
-    </ul>
+    <h1>Status Permohonan Cuti Anda</h1>
+    <p>Halo, {{ $permohonan->karyawan->nama }},</p>
+    <p>Permohonan cuti Anda untuk jenis cuti <strong>{{ $permohonan->jenis_cuti }}</strong> dengan tanggal mulai <strong>{{ $permohonan->tanggal_mulai }}</strong> dan tanggal selesai <strong>{{ $permohonan->tanggal_selesai }}</strong> telah diperbarui.</p>
+    <p>Status terbaru: <strong>{{ $permohonan->status }}</strong></p>
 
-    @if($permohonan->status === 'Ditolak')
-        <p>Silakan hubungi admin untuk informasi lebih lanjut mengenai alasan penolakan.</p>
+    @if ($permohonan->status === 'Ditolak' && $permohonan->alasan_penolakan)
+        <p>Alasan penolakan: <strong>{{ $permohonan->alasan_penolakan }}</strong></p>
     @endif
 
     <p>Terima kasih.</p>

@@ -1,14 +1,13 @@
 <?php
 
 namespace App\Mail;
-
+use App\Models\PermohonanCuti;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use App\Models\PermohonanCuti; // Tambahkan ini
 
 class StatusCutiNotification extends Mailable
 {
@@ -18,9 +17,6 @@ class StatusCutiNotification extends Mailable
 
     /**
      * Create a new message instance.
-     *
-     * @param  PermohonanCuti  $permohonan
-     * @return void
      */
     public function __construct(PermohonanCuti $permohonan)
     {
@@ -33,7 +29,7 @@ class StatusCutiNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Pemberitahuan Status Permohonan Cuti',
+            subject: 'Notifikasi Status Cuti Anda',
         );
     }
 
@@ -44,6 +40,9 @@ class StatusCutiNotification extends Mailable
     {
         return new Content(
             view: 'emails.status_cuti',
+            with: [
+                'permohonan' => $this->permohonan,
+            ],
         );
     }
 

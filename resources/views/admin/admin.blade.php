@@ -75,6 +75,16 @@
   </div>
 </div>
 
+<div id="reject-modal" class="popup-modal">
+    <div class="popup-content">
+        <span id="close-reject-modal" class="close-btn">&times;</span>
+        <h4 id="popup-title">Tolak Permohonan</h4>
+        <p>Silakan masukkan alasan penolakan:</p>
+        <textarea id="rejection-reason" rows="4" class="form-control" required></textarea>
+        <button id="confirm-reject-btn" class="action-btn">Kirim Penolakan</button>
+    </div>
+</div>
+
 <script src="{{ asset('js/gaya.js') }}"></script>
 
 </body>

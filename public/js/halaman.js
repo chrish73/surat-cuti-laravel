@@ -5,21 +5,23 @@ document.addEventListener('DOMContentLoaded', () => {
     infoForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('email').value;
+        const id_karyawan = document.getElementById('id').value; // Mengambil ID Karyawan
 
         try {
             const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email })
+                // Kirim ID Karyawan dan email
+                body: JSON.stringify({ id_karyawan: id_karyawan, email: email })
             });
 
             const data = await response.json();
             if (response.ok) {
-                // Simpan token dan info karyawan ke sessionStorage
                 sessionStorage.setItem('api_token', data.api_token);
                 sessionStorage.setItem('employeeName', data.karyawan.nama);
                 sessionStorage.setItem('employeeId', data.karyawan.id_karyawan);
                 sessionStorage.setItem('employeeUnit', data.karyawan.unit);
+                sessionStorage.setItem('employeeEmail', data.karyawan.email); // Simpan email yang sudah diperbarui
 
                 window.location.href = '/dashboard';
             } else {

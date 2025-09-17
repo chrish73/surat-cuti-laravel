@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (name) document.getElementById('employee-name').textContent = name;
     if (id) document.getElementById('employee-id').textContent = id;
     if (unit) document.getElementById('employee-unit').textContent = unit;
-    if (email) document.getElementById('employee-email').textContent = email;
+    // Baris untuk email dihapus karena elemen tidak ada di halaman ini.
 
     const submitButton = document.querySelector('.submit-btn');
     const startDateInput = document.getElementById('start-date');
@@ -52,24 +52,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             if (!response.ok) {
-                // Tangani respons jika tidak berhasil, seperti 404 Not Found atau 401 Unauthorized
                 const errorData = await response.json();
                 alert('Gagal mengunduh file: ' + (errorData.message || 'Terjadi kesalahan.'));
                 return;
             }
 
-            // Dapatkan blob file dari respons
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
-
-            // Buat tautan sementara untuk mengunduh file
             const a = document.createElement('a');
             a.href = url;
             a.download = `Surat_Persetujuan_Cuti_${permohonanId}.pdf`;
             document.body.appendChild(a);
             a.click();
-
-            // Bersihkan URL sementara dan elemen a
             window.URL.revokeObjectURL(url);
             a.remove();
         } catch (error) {
@@ -105,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = await response.json();
             if (response.ok) {
                 leaveHistory = data.map((item) => ({
-                    id: item.id, // Tambahkan ID permohonan di sini
+                    id: item.id,
                     leaveType: item.jenis_cuti,
                     startDate: item.tanggal_mulai,
                     endDate: item.tanggal_selesai,
@@ -165,7 +159,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-        // Panggil fungsi untuk menambahkan event listener setelah tabel diperbarui
         addDownloadButtonListeners();
     };
 
@@ -176,6 +169,111 @@ document.addEventListener('DOMContentLoaded', async () => {
                 downloadSuratPersetujuan(permohonanId);
             });
         });
+    };
+
+    const updateLeaveSummary = () => {
+        const leaveType = leaveTypeSelect.value;
+        const startDateValue = startDateInput.value;
+        const endDateValue = endDateInput.value;
+
+        if (leaveType && startDateValue && endDateValue) {
+            const days = calculateDays(startDateValue, endDateValue);
+            const formattedStartDate = new Date(startDateValue).toLocaleDateString('id-ID');
+            const formattedEndDate = new Date(endDateValue).toLocaleDateString('id-ID');
+
+            let summaryText = `[Mengambil ${leaveType} selama ${days} hari, dari ${formattedStartDate} hingga ${formattedEndDate}.]`;
+
+            if (leaveType === 'Cuti Tahunan') {
+                if (days > 3) {
+                    summaryText = `<span style="color: red;">Durasi Cuti Tahunan tidak boleh lebih dari 3 hari.</span>`;
+                }
+            } else if (leaveType === 'Cuti Lahiran') {
+                if (days !== 90) {
+                    summaryText = `<span style="color: red;">Cuti Lahiran harus 90 hari.</span>`;
+                }
+            }
+
+            leaveSummaryNote.innerHTML = summaryText;
+        } else {
+            leaveSummaryNote.textContent = '';
+        }
+    };
+
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    function calculateDays(start, end) {
+        if (!start || !end) return 0;
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        const diffInMilliseconds = endDate.getTime() - startDate.getTime();
+        const diffInDays = diffInMilliseconds / (1000 * 60 * 60 * 24);
+        return Math.floor(diffInDays) + 1;
+    }
+
+    const setDateLimits = () => {
+        const leaveType = leaveTypeSelect.value;
+        const today = new Date();
+        const minStartDate = new Date(today);
+
+        // Atur batasan tanggal mulai
+        if (leaveType === 'Cuti Tahunan') {
+            minStartDate.setDate(today.getDate() + 30);
+            annualLeaveNote.classList.remove('hidden');
+        } else {
+            minStartDate.setDate(today.getDate());
+            annualLeaveNote.classList.add('hidden');
+        }
+        startDateInput.setAttribute('min', formatDate(minStartDate));
+
+        // Atur batasan tanggal selesai
+        const startDateValue = startDateInput.value;
+        if (!startDateValue) {
+            endDateInput.removeAttribute('min');
+            endDateInput.removeAttribute('max');
+            return;
+        }
+
+        const startDate = new Date(startDateValue);
+        endDateInput.setAttribute('min', startDateValue);
+
+        if (leaveType === 'Cuti Tahunan') {
+            const maxDate = new Date(startDate);
+            maxDate.setDate(startDate.getDate() + 2);
+            endDateInput.setAttribute('max', formatDate(maxDate));
+        } else if (leaveType === 'Cuti Lahiran') {
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + 89);
+            endDateInput.value = formatDate(endDate);
+            endDateInput.setAttribute('min', formatDate(endDate));
+            endDateInput.setAttribute('max', formatDate(endDate));
+        } else {
+            let maxDays;
+            switch (leaveType) {
+                case 'Cuti Menikah':
+                    maxDays = 3;
+                    break;
+                case 'Cuti Kemalangan':
+                case 'Cuti Istri Lahiran':
+                    maxDays = 2;
+                    break;
+                default:
+                    endDateInput.removeAttribute('max');
+                    return;
+            }
+            const maxDate = new Date(startDate);
+            maxDate.setDate(startDate.getDate() + (maxDays - 1));
+            endDateInput.setAttribute('max', formatDate(maxDate));
+        }
+
+        if (endDateInput.value && new Date(endDateInput.value) > new Date(endDateInput.getAttribute('max'))) {
+            endDateInput.value = '';
+        }
+        updateLeaveSummary();
     };
 
     await fetchEmployeeData();
@@ -207,10 +305,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         startDateInput.value = '';
         endDateInput.value = '';
-        setStartDateLimit();
-        setEndDateLimit();
-        updateLeaveSummary();
+        setDateLimits();
     });
+
+    startDateInput.addEventListener('change', setDateLimits);
+    endDateInput.addEventListener('change', updateLeaveSummary);
 
     fileAttachInput.addEventListener('change', () => {
         if (fileAttachInput.files.length > 0) {
@@ -219,123 +318,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             fileNameDisplay.textContent = 'Belum ada file dipilih';
         }
     });
-
-    function formatDate(date) {
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
-
-    function calculateDays(start, end) {
-        if (!start || !end) return 0;
-        const startDate = new Date(start);
-        const endDate = new Date(end);
-        const diffInMilliseconds = endDate.getTime() - startDate.getTime();
-        const diffInDays = diffInMilliseconds / (1000 * 60 * 60 * 24);
-        return Math.floor(diffInDays) + 1;
-    }
-
-    const updateLeaveSummary = () => {
-        const leaveType = leaveTypeSelect.value;
-        const startDateValue = startDateInput.value;
-        const endDateValue = endDateInput.value;
-
-        if (leaveType && startDateValue && endDateValue) {
-            const days = calculateDays(startDateValue, endDateValue);
-            const formattedStartDate = new Date(startDateValue).toLocaleDateString('id-ID');
-            const formattedEndDate = new Date(endDateValue).toLocaleDateString('id-ID');
-
-            let summaryText = `[Mengambil ${leaveType} selama ${days} hari, dari ${formattedStartDate} hingga ${formattedEndDate}.]`;
-
-            if (leaveType === 'Cuti Tahunan') {
-                if (days > 3) {
-                    summaryText = `<span style="color: red;">Durasi Cuti Tahunan tidak boleh lebih dari 3 hari.</span>`;
-                }
-            } else if (leaveType === 'Cuti Lahiran') {
-                if (days !== 90) {
-                    summaryText = `<span style="color: red;">Cuti Lahiran harus 90 hari.</span>`;
-                }
-            }
-
-            leaveSummaryNote.innerHTML = summaryText;
-        } else {
-            leaveSummaryNote.textContent = '';
-        }
-    };
-
-    const setStartDateLimit = () => {
-        const today = new Date();
-        const minStartDate = new Date(today);
-
-        if (leaveTypeSelect.value === 'Cuti Tahunan') {
-            minStartDate.setDate(today.getDate() + 30);
-            annualLeaveNote.classList.remove('hidden');
-        } else {
-            minStartDate.setDate(today.getDate());
-            annualLeaveNote.classList.add('hidden');
-        }
-
-        startDateInput.setAttribute('min', formatDate(minStartDate));
-    };
-
-    setStartDateLimit();
-
-    const setEndDateLimit = () => {
-        const leaveType = leaveTypeSelect.value;
-        const startDateValue = startDateInput.value;
-
-        if (!startDateValue) {
-            endDateInput.removeAttribute('min');
-            endDateInput.removeAttribute('max');
-            return;
-        }
-
-        const startDate = new Date(startDateValue);
-        endDateInput.setAttribute('min', startDateValue);
-
-        if (leaveType === 'Cuti Tahunan') {
-            const maxDate = new Date(startDate);
-            maxDate.setDate(startDate.getDate() + 2);
-            endDateInput.setAttribute('max', formatDate(maxDate));
-            return;
-        }
-
-        let maxDays;
-        switch (leaveType) {
-            case 'Cuti Lahiran':
-                const endDate = new Date(startDate);
-                endDate.setMonth(startDate.getMonth() + 3);
-                endDate.setDate(endDate.getDate() - 1);
-                endDateInput.value = formatDate(endDate);
-                endDateInput.setAttribute('min', formatDate(endDate));
-                endDateInput.setAttribute('max', formatDate(endDate));
-                return;
-            case 'Cuti Menikah':
-                maxDays = 3;
-                break;
-            case 'Cuti Kemalangan':
-            case 'Cuti Istri Lahiran':
-                maxDays = 2;
-                break;
-            default:
-                endDateInput.removeAttribute('max');
-                return;
-        }
-
-        const maxDate = new Date(startDate);
-        maxDate.setDate(startDate.getDate() + (maxDays - 1));
-        endDateInput.setAttribute('max', formatDate(maxDate));
-
-        if (endDateInput.value && new Date(endDateInput.value) > maxDate) {
-            endDateInput.value = '';
-        }
-        updateLeaveSummary();
-    };
-
-    startDateInput.addEventListener('change', setEndDateLimit);
-    leaveTypeSelect.addEventListener('change', setEndDateLimit);
-    endDateInput.addEventListener('change', updateLeaveSummary);
 
     leaveForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -365,19 +347,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         const days = calculateDays(startDateInput.value, endDateInput.value);
 
         if (leaveType === 'Cuti Tahunan') {
-            if (days > 3) {
-                alert('Durasi Cuti Tahunan tidak boleh lebih dari 3 hari.');
-                return;
-            }
             const today = new Date();
             const minDateForAnnualLeave = new Date(today);
-            minDateForAnnualLeave.setDate(today.getDate() + 29);
+            minDateForAnnualLeave.setDate(today.getDate() + 30);
             if (new Date(startDateInput.value) < minDateForAnnualLeave) {
                 alert('Cuti Tahunan hanya bisa diajukan minimal 30 hari dari hari ini.');
                 return;
             }
+            if (days > 3) {
+                alert('Durasi Cuti Tahunan tidak boleh lebih dari 3 hari.');
+                return;
+            }
             if (annualLeaveQuota - days < 0) {
                 alert('Sisa cuti tahunan tidak mencukupi.');
+                return;
+            }
+        } else if (leaveType === 'Cuti Lahiran') {
+            if (days !== 90) {
+                alert('Cuti Lahiran harus 90 hari.');
                 return;
             }
         }
@@ -388,7 +375,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             tanggal_selesai: endDateInput.value,
             alasan: reasonTextarea.value,
             alamat: addressTextarea.value,
-            file: fileAttachInput.files[0]
         };
 
         try {
@@ -423,4 +409,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Error:', error);
         }
     });
+
+    // Panggil fungsi ini untuk pertama kali saat halaman dimuat
+    setDateLimits();
 });

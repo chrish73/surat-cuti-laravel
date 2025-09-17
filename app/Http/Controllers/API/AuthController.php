@@ -10,10 +10,28 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:karyawan,email',
+            'id_karyawan' => 'required|exists:karyawan,id_karyawan',
+            'email' => 'required|email',
         ]);
 
-        $karyawan = Karyawan::where('email', $request->email)->first();
+        $karyawan = Karyawan::where('id_karyawan', $request->id_karyawan)->first();
+
+        // Cek apakah email yang dimasukkan sudah digunakan oleh karyawan lain
+        $existingKaryawanWithEmail = Karyawan::where('email', $request->email)
+            ->where('id_karyawan', '!=', $request->id_karyawan)
+            ->first();
+
+        if ($existingKaryawanWithEmail) {
+            return response()->json([
+                'message' => 'Login Gagal: Email sudah digunakan oleh karyawan lain.'
+            ], 409); // Menggunakan kode status 409 Conflict
+        }
+
+        // Jika email berbeda dan belum ada yang menggunakan, perbarui
+        if ($karyawan && $karyawan->email !== $request->email) {
+            $karyawan->email = $request->email;
+            $karyawan->save();
+        }
 
         // Menggunakan Sanctum untuk membuat token
         $token = $karyawan->createToken('auth-token')->plainTextToken;
