@@ -11,6 +11,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const rejectionReasonTextarea = document.getElementById('rejection-reason');
     let currentPermohonanId = null;
 
+    // Tambahkan variabel untuk modal edit
+    const editModal = document.getElementById('edit-modal');
+    const closeEditModal = document.getElementById('close-edit-modal');
+    const editForm = document.getElementById('edit-form');
+    const editPermohonanId = document.getElementById('edit-permohonan-id');
+    const editJenisCuti = document.getElementById('edit-jenis-cuti');
+    const editTanggalMulai = document.getElementById('edit-tanggal-mulai');
+    const editTanggalSelesai = document.getElementById('edit-tanggal-selesai');
+    const editDurasi = document.getElementById('edit-durasi');
+    const editAlasan = document.getElementById('edit-alasan');
+    const editAlamat = document.getElementById('edit-alamat');
+
     if (!token || isAdmin !== 'true') {
         window.location.href = '/admin/login';
         return;
@@ -119,7 +131,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 rejectModal.style.display = 'flex';
             });
         });
-    }
+
+        // Tambahkan event listener untuk tombol edit
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const id = e.target.dataset.id;
+                try {
+                    const response = await fetch(`/api/admin/permohonan/${id}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const permohonan = await response.json();
+                    if (response.ok) {
+                        editPermohonanId.value = permohonan.id;
+                        editJenisCuti.value = permohonan.jenis_cuti;
+                        editTanggalMulai.value = permohonan.tanggal_mulai;
+                        editTanggalSelesai.value = permohonan.tanggal_selesai;
+                        editDurasi.value = permohonan.durasi;
+                        editAlasan.value = permohonan.alasan;
+                        editAlamat.value = permohonan.alamat_selama_cuti;
+                        editModal.style.display = 'flex';
+                    } else {
+                        showNotificationPopup('error', 'Gagal memuat data permohonan.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showNotificationPopup('error', 'Terjadi kesalahan saat memuat data.');
+                }
+            });
+        });
+    };
 
     const loadRequests = async (unitFilter = '') => {
         const tableBody = document.getElementById('request-list');
@@ -157,9 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
                        </div>`
                     : `<span class="tindakan-selesai">${req.status}</span>`;
 
-                const editButton = req.status !== 'Menunggu'
-                    ? `<button class="action-icon-btn edit" data-id="${req.id}" title="Edit"></button>`
-                    : '';
+                const editButton = `<button class="edit-btn action-icon-btn edit" data-id="${req.id}" title="Edit"></button>`;
 
                 const infoButton = `<button class="action-icon-btn info" onclick="showInfo('${req.alasan}', '${req.alamat_selama_cuti}')" title="Lihat Detail"></button>`;
 
@@ -180,15 +218,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 tableBody.appendChild(row);
             });
 
-            // Panggil fungsi untuk menambahkan event listener setelah tabel dirender
             addEventListeners();
         } catch (error) {
             tableBody.innerHTML = '<tr><td colspan="11">Gagal memuat data. Mohon cek koneksi Anda.</td></tr>';
             console.error('Error:', error);
         }
     };
-
-    loadRequests();
 
     if (unitFilterSelect) {
         unitFilterSelect.addEventListener('change', (event) => {
@@ -233,7 +268,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Event listener untuk modal penolakan
     closeRejectModal.addEventListener('click', () => {
         rejectModal.style.display = 'none';
         rejectionReasonTextarea.value = '';
@@ -271,4 +305,49 @@ document.addEventListener('DOMContentLoaded', () => {
         rejectModal.style.display = 'none';
         rejectionReasonTextarea.value = '';
     });
+
+    // Event listener untuk menutup modal edit
+    closeEditModal.addEventListener('click', () => {
+        editModal.style.display = 'none';
+        editForm.reset();
+    });
+
+    // Event listener untuk form edit
+    editForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = editPermohonanId.value;
+        const formData = {
+            jenis_cuti: editJenisCuti.value,
+            tanggal_mulai: editTanggalMulai.value,
+            tanggal_selesai: editTanggalSelesai.value,
+            durasi: editDurasi.value,
+            alasan: editAlasan.value,
+            alamat_selama_cuti: editAlamat.value
+        };
+
+        try {
+            const response = await fetch(`/api/admin/permohonan/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                showNotificationPopup('success', 'Data permohonan berhasil diperbarui.');
+                editModal.style.display = 'none';
+                loadRequests();
+            } else {
+                showNotificationPopup('error', result.message || 'Gagal memperbarui data.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotificationPopup('error', 'Terjadi kesalahan saat menyimpan perubahan.');
+        }
+    });
+
+    loadRequests();
 });
