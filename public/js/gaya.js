@@ -11,18 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const rejectionReasonTextarea = document.getElementById('rejection-reason');
     let currentPermohonanId = null;
 
-    // Tambahkan variabel untuk modal edit
-    const editModal = document.getElementById('edit-modal');
-    const closeEditModal = document.getElementById('close-edit-modal');
-    const editForm = document.getElementById('edit-form');
-    const editPermohonanId = document.getElementById('edit-permohonan-id');
-    const editJenisCuti = document.getElementById('edit-jenis-cuti');
-    const editTanggalMulai = document.getElementById('edit-tanggal-mulai');
-    const editTanggalSelesai = document.getElementById('edit-tanggal-selesai');
-    const editDurasi = document.getElementById('edit-durasi');
-    const editAlasan = document.getElementById('edit-alasan');
-    const editAlamat = document.getElementById('edit-alamat');
-
     if (!token || isAdmin !== 'true') {
         window.location.href = '/admin/login';
         return;
@@ -66,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    const changeStatus = async (id, newStatus) => {
+    const changeStatus = async (id, newStatus, alasanPenolakan = null) => {
         try {
             const response = await fetch('/api/admin/change-status', {
                 method: 'POST',
@@ -74,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ id: id, status: newStatus })
+                body: JSON.stringify({ id: id, status: newStatus, alasan_penolakan: alasanPenolakan })
             });
             const result = await response.json();
 
@@ -116,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Fungsi untuk menambahkan event listeners setelah tabel di-render
     const addEventListeners = () => {
         document.querySelectorAll('.approve-btn').forEach(button => {
             button.addEventListener('click', async (e) => {
@@ -132,31 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Tambahkan event listener untuk tombol edit
-        document.querySelectorAll('.edit-btn').forEach(button => {
+        document.querySelectorAll('.revert-btn').forEach(button => {
             button.addEventListener('click', async (e) => {
                 const id = e.target.dataset.id;
-                try {
-                    const response = await fetch(`/api/admin/permohonan/${id}`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    const permohonan = await response.json();
-                    if (response.ok) {
-                        editPermohonanId.value = permohonan.id;
-                        editJenisCuti.value = permohonan.jenis_cuti;
-                        editTanggalMulai.value = permohonan.tanggal_mulai;
-                        editTanggalSelesai.value = permohonan.tanggal_selesai;
-                        editDurasi.value = permohonan.durasi;
-                        editAlasan.value = permohonan.alasan;
-                        editAlamat.value = permohonan.alamat_selama_cuti;
-                        editModal.style.display = 'flex';
-                    } else {
-                        showNotificationPopup('error', 'Gagal memuat data permohonan.');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    showNotificationPopup('error', 'Terjadi kesalahan saat memuat data.');
-                }
+                await changeStatus(id, 'Menunggu');
             });
         });
     };
@@ -190,14 +156,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     ? `<a href="/storage/${req.lampiran_file}" target="_blank" class="action-btn">Lihat</a>`
                     : `<span class="tindakan-selesai">Tidak ada</span>`;
 
-                const actionButtons = req.status === 'Menunggu'
-                    ? `<div class="action-buttons-group">
-                          <button class="approve-btn action-icon-btn approve" data-id="${req.id}" title="Setujui"></button>
-                          <button class="reject-btn action-icon-btn reject" data-id="${req.id}" title="Tolak"></button>
-                       </div>`
-                    : `<span class="tindakan-selesai">${req.status}</span>`;
-
-                const editButton = `<button class="edit-btn action-icon-btn edit" data-id="${req.id}" title="Edit"></button>`;
+                let actionButtons;
+                if (req.status === 'Menunggu') {
+                    actionButtons = `<div class="action-buttons-group">
+                                        <button class="approve-btn action-icon-btn approve" data-id="${req.id}" title="Setujui"></button>
+                                        <button class="reject-btn action-icon-btn reject" data-id="${req.id}" title="Tolak"></button>
+                                    </div>`;
+                } else {
+                    actionButtons = `<div class="action-buttons-group">
+                                        <button class="revert-btn action-btn" data-id="${req.id}">Edit Status</button>
+                                    </div>`;
+                }
 
                 const infoButton = `<button class="action-icon-btn info" onclick="showInfo('${req.alasan}', '${req.alamat_selama_cuti}')" title="Lihat Detail"></button>`;
 
@@ -213,7 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td><div class="status-badge ${statusClass}">${req.status}</div></td>
                     <td>${fileAttachment}</td>
                     <td>${actionButtons}</td>
-                    <td>${editButton}</td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -280,73 +248,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        try {
-            const response = await fetch(`/api/admin/reject/${currentPermohonanId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ alasan_penolakan: reason })
-            });
-
-            const result = await response.json();
-            if (response.ok) {
-                showNotificationPopup('success', result.message || 'Permohonan berhasil ditolak.');
-                loadRequests();
-            } else {
-                showNotificationPopup('error', result.message || 'Gagal menolak permohonan.');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            showNotificationPopup('error', 'Terjadi kesalahan saat menolak permohonan.');
-        }
-
+        await changeStatus(currentPermohonanId, 'Ditolak', reason);
         rejectModal.style.display = 'none';
         rejectionReasonTextarea.value = '';
-    });
-
-    // Event listener untuk menutup modal edit
-    closeEditModal.addEventListener('click', () => {
-        editModal.style.display = 'none';
-        editForm.reset();
-    });
-
-    // Event listener untuk form edit
-    editForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = editPermohonanId.value;
-        const formData = {
-            jenis_cuti: editJenisCuti.value,
-            tanggal_mulai: editTanggalMulai.value,
-            tanggal_selesai: editTanggalSelesai.value,
-            durasi: editDurasi.value,
-            alasan: editAlasan.value,
-            alamat_selama_cuti: editAlamat.value
-        };
-
-        try {
-            const response = await fetch(`/api/admin/permohonan/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(formData)
-            });
-
-            const result = await response.json();
-            if (response.ok) {
-                showNotificationPopup('success', 'Data permohonan berhasil diperbarui.');
-                editModal.style.display = 'none';
-                loadRequests();
-            } else {
-                showNotificationPopup('error', result.message || 'Gagal memperbarui data.');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            showNotificationPopup('error', 'Terjadi kesalahan saat menyimpan perubahan.');
-        }
     });
 
     loadRequests();

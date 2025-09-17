@@ -43,7 +43,7 @@
             <button id="export-excel-btn" class="action-btn">Ekspor ke Excel</button>
         </div>
 
-        <!-- Table -->
+        <!-- Tabel Data -->
         <div class="table-container">
             <table>
                 <thead>
@@ -59,7 +59,6 @@
                         <th>Status</th>
                         <th>Lampiran File</th>
                         <th>Aksi</th>
-                        <th>Edit</th>
                     </tr>
                 </thead>
                 <tbody id="request-list"></tbody>
@@ -73,7 +72,7 @@
     </footer>
 </div>
 
-<!-- Notification Popup -->
+<!-- Notifikasi -->
 <div id="notification-popup" class="popup-overlay">
     <div class="popup-content">
         <div id="popup-icon" class="popup-icon"></div>
@@ -83,7 +82,7 @@
     </div>
 </div>
 
-<!-- Reject Modal -->
+<!-- Modal Tolak Cuti -->
 <div id="reject-modal" class="popup-modal">
     <div class="popup-content">
         <span id="close-reject-modal" class="close-btn">&times;</span>
@@ -91,49 +90,6 @@
         <p>Silakan masukkan alasan penolakan:</p>
         <textarea id="rejection-reason" rows="4" class="form-control" required></textarea>
         <button id="confirm-reject-btn" class="action-btn">Kirim Penolakan</button>
-    </div>
-</div>
-
-<!-- Edit Modal -->
-<div id="edit-modal" class="popup-modal">
-    <div class="popup-content">
-        <span id="close-edit-modal" class="close-btn">&times;</span>
-        <h4 id="popup-title">Edit Permohonan Cuti</h4>
-        <form id="edit-form">
-            <input type="hidden" id="edit-permohonan-id">
-
-            <div class="form-group">
-                <label for="edit-jenis-cuti">Jenis Cuti</label>
-                <input type="text" id="edit-jenis-cuti" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label for="edit-tanggal-mulai">Tanggal Mulai</label>
-                <input type="date" id="edit-tanggal-mulai" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label for="edit-tanggal-selesai">Tanggal Selesai</label>
-                <input type="date" id="edit-tanggal-selesai" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label for="edit-durasi">Durasi (Hari)</label>
-                <input type="number" id="edit-durasi" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label for="edit-alasan">Alasan Cuti</label>
-                <textarea id="edit-alasan" rows="4" class="form-control" required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="edit-alamat">Alamat Selama Cuti</label>
-                <textarea id="edit-alamat" rows="4" class="form-control" required></textarea>
-            </div>
-
-            <button type="submit" class="action-btn">Simpan Perubahan</button>
-        </form>
     </div>
 </div>
 

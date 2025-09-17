@@ -1,176 +1,184 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    // Ambil token dari sessionStorage
-    const apiToken = sessionStorage.getItem('api_token');
-    if (!apiToken) {
+// public/js/admin.js
+document.addEventListener('DOMContentLoaded', () => {
+    const isAdmin = sessionStorage.getItem('is_admin');
+    const token = sessionStorage.getItem('api_token');
+    const karyawanList = document.getElementById('karyawan-list');
+    const addKaryawanBtn = document.getElementById('add-karyawan-btn');
+    const karyawanModal = document.getElementById('karyawan-modal');
+    const closeKaryawanModal = document.getElementById('close-karyawan-modal');
+    const karyawanForm = document.getElementById('karyawan-form');
+    const modalTitle = document.getElementById('modal-title');
+    const submitBtn = document.getElementById('submit-btn');
+
+    const namaInput = document.getElementById('nama');
+    const idKaryawanInput = document.getElementById('id_karyawan');
+    const emailInput = document.getElementById('email');
+    const unitInput = document.getElementById('unit');
+    const jatahCutiInput = document.getElementById('jatah_cuti_tahunan');
+    const passwordInput = document.getElementById('password');
+    const isAdminCheckbox = document.getElementById('is_admin');
+    const karyawanIdInput = document.getElementById('karyawan-id');
+
+    if (!token || isAdmin !== 'true') {
         window.location.href = '/admin/login';
         return;
     }
 
-    const rejectModal = document.getElementById('reject-modal');
-    const closeBtn = document.getElementById('close-reject-modal');
-    const confirmRejectBtn = document.getElementById('confirm-reject-btn');
-    const rejectionReasonTextarea = document.getElementById('rejection-reason');
-    let currentPermohonanId = null;
-
-    const showNotification = (title, message, isSuccess) => {
+    const showNotificationPopup = (message, isError = false) => {
         const popup = document.getElementById('notification-popup');
-        const icon = document.getElementById('popup-icon');
-        const titleEl = document.getElementById('popup-title');
-        const messageEl = document.getElementById('popup-message');
-
-        titleEl.textContent = title;
-        messageEl.textContent = message;
-
-        if (isSuccess) {
-            icon.innerHTML = '<i class="fas fa-check-circle"></i>';
-            icon.style.color = 'green';
-        } else {
-            icon.innerHTML = '<i class="fas fa-times-circle"></i>';
-            icon.style.color = 'red';
-        }
-        popup.style.display = 'flex';
+        popup.textContent = message;
+        popup.style.backgroundColor = isError ? '#dc3545' : '#28a745';
+        popup.style.display = 'block';
+        setTimeout(() => {
+            popup.style.display = 'none';
+        }, 3000);
     };
 
-    const fetchLeaveRequests = async () => {
-        const unitFilter = document.getElementById('unit-filter').value;
-        const url = unitFilter ? `/api/admin/permohonan?unit=${unitFilter}` : '/api/admin/permohonan';
+    const loadKaryawan = async () => {
+        karyawanList.innerHTML = '<tr><td colspan="6">Memuat data...</td></tr>';
         try {
-            const response = await fetch(url, {
-                headers: { 'Authorization': `Bearer ${apiToken}` }
+            const response = await fetch('/api/admin/karyawan', {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
-            if (response.ok) {
-                renderTable(data);
-                addEventListeners();
-            } else {
-                console.error('Failed to fetch data:', data.message);
-                showNotification('Error', 'Gagal memuat data permohonan.', false);
-            }
+            karyawanList.innerHTML = '';
+            data.forEach(karyawan => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${karyawan.nama}</td>
+                    <td>${karyawan.id_karyawan}</td>
+                    <td>${karyawan.email}</td>
+                    <td>${karyawan.unit}</td>
+                    <td>${karyawan.jatah_cuti_tahunan} Hari</td>
+                    <td class="action-buttons">
+                        <button class="edit-btn" data-id="${karyawan.id}">Edit</button>
+                        <button class="delete-btn" data-id="${karyawan.id}">Hapus</button>
+                    </td>
+                `;
+                karyawanList.appendChild(row);
+            });
+            addEventListeners();
         } catch (error) {
             console.error('Error:', error);
-            showNotification('Error', 'Terjadi kesalahan saat memuat data.', false);
+            karyawanList.innerHTML = '<tr><td colspan="6">Gagal memuat data.</td></tr>';
         }
-    };
-
-    const renderTable = (requests) => {
-        const tableBody = document.getElementById('request-list');
-        tableBody.innerHTML = '';
-        requests.forEach(req => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${req.karyawan.nama}</td>
-                <td>${req.karyawan.id_karyawan}</td>
-                <td>${req.karyawan.unit}</td>
-                <td>${req.jenis_cuti}</td>
-                <td>${req.karyawan.jatah_cuti_tahunan} Hari</td>
-                <td>${req.tanggal_mulai} sampai ${req.tanggal_selesai}</td>
-                <td>${req.durasi} Hari</td>
-                <td>
-                    <strong>Alasan:</strong> ${req.alasan}
-                    <br>
-                    <strong>Alamat:</strong> ${req.alamat_selama_cuti}
-                </td>
-                <td><span class="status status-${req.status.toLowerCase()}">${req.status}</span></td>
-                <td>
-                    ${req.file_lampiran ? `<a href="/storage/${req.file_lampiran}" target="_blank" class="action-btn">Lihat</a>` : 'Tidak ada'}
-                </td>
-                <td class="action-buttons">
-                    ${req.status === 'Menunggu' ? `
-                    <button class="approve-btn action-btn" data-id="${req.id}">Setujui</button>
-                    <button class="reject-btn action-btn" data-id="${req.id}">Tolak</button>
-                    ` : `
-                    <button class="action-btn-disabled" disabled>Setujui</button>
-                    <button class="action-btn-disabled" disabled>Tolak</button>
-                    `}
-                </td>
-                <td>
-                    <button class="edit-btn action-btn" data-id="${req.id}">Edit</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
     };
 
     const addEventListeners = () => {
-        document.querySelectorAll('.approve-btn').forEach(button => {
+        document.querySelectorAll('.edit-btn').forEach(button => {
             button.addEventListener('click', async (e) => {
                 const id = e.target.dataset.id;
-                await updateLeaveRequestStatus(id, 'approve');
+                modalTitle.textContent = 'Edit Karyawan';
+                submitBtn.textContent = 'Update';
+                karyawanIdInput.value = id;
+                passwordInput.required = false; // Password is not required for update
+                await loadKaryawanForEdit(id);
+                karyawanModal.style.display = 'flex';
             });
         });
 
-        document.querySelectorAll('.reject-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                currentPermohonanId = e.target.dataset.id;
-                rejectModal.style.display = 'flex';
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const id = e.target.dataset.id;
+                if (confirm('Apakah Anda yakin ingin menghapus data karyawan ini?')) {
+                    await deleteKaryawan(id);
+                }
             });
         });
     };
 
-    const updateLeaveRequestStatus = async (id, status) => {
+    const loadKaryawanForEdit = async (id) => {
         try {
-            const response = await fetch(`/api/admin/${status}/${id}`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${apiToken}` }
+            const response = await fetch(`/api/admin/karyawan/${id}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const karyawan = await response.json();
+            namaInput.value = karyawan.nama;
+            idKaryawanInput.value = karyawan.id_karyawan;
+            emailInput.value = karyawan.email;
+            unitInput.value = karyawan.unit;
+            jatahCutiInput.value = karyawan.jatah_cuti_tahunan;
+            isAdminCheckbox.checked = karyawan.is_admin;
+        } catch (error) {
+            console.error('Error:', error);
+            showNotificationPopup('Gagal memuat data karyawan untuk edit.', true);
+        }
+    };
+
+    const deleteKaryawan = async (id) => {
+        try {
+            const response = await fetch(`/api/admin/karyawan/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             const result = await response.json();
             if (response.ok) {
-                showNotification('Berhasil!', result.message, true);
-                fetchLeaveRequests();
+                showNotificationPopup(result.message);
+                loadKaryawan();
             } else {
-                showNotification('Gagal!', result.message, false);
+                showNotificationPopup(result.message, true);
             }
         } catch (error) {
             console.error('Error:', error);
-            showNotification('Gagal!', 'Terjadi kesalahan.', false);
+            showNotificationPopup('Terjadi kesalahan saat menghapus data.', true);
         }
     };
 
-    document.getElementById('export-excel-btn').addEventListener('click', () => {
-        const unit = document.getElementById('unit-filter').value;
-        window.location.href = `/api/admin/export-excel?unit=${unit}`;
+    addKaryawanBtn.addEventListener('click', () => {
+        modalTitle.textContent = 'Tambah Karyawan';
+        submitBtn.textContent = 'Simpan';
+        karyawanForm.reset();
+        karyawanIdInput.value = '';
+        passwordInput.required = true;
+        karyawanModal.style.display = 'flex';
     });
 
-    document.getElementById('unit-filter').addEventListener('change', fetchLeaveRequests);
-
-    // Event listener untuk modal penolakan
-    closeBtn.addEventListener('click', () => {
-        rejectModal.style.display = 'none';
-        rejectionReasonTextarea.value = '';
+    closeKaryawanModal.addEventListener('click', () => {
+        karyawanModal.style.display = 'none';
     });
 
-    confirmRejectBtn.addEventListener('click', async () => {
-        const reason = rejectionReasonTextarea.value;
-        if (!reason.trim()) {
-            alert('Alasan penolakan tidak boleh kosong.');
-            return;
+    karyawanForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = karyawanIdInput.value;
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `/api/admin/karyawan/${id}` : '/api/admin/karyawan';
+
+        const data = {
+            nama: namaInput.value,
+            id_karyawan: idKaryawanInput.value,
+            email: emailInput.value,
+            unit: unitInput.value,
+            jatah_cuti_tahunan: jatahCutiInput.value,
+            is_admin: isAdminCheckbox.checked
+        };
+        if (passwordInput.value) {
+            data.password = passwordInput.value;
         }
 
         try {
-            const response = await fetch(`/api/admin/reject/${currentPermohonanId}`, {
-                method: 'POST',
+            const response = await fetch(url, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiToken}`
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ alasan_penolakan: reason })
+                body: JSON.stringify(data)
             });
-
             const result = await response.json();
+
             if (response.ok) {
-                showNotification('Berhasil!', 'Permohonan berhasil ditolak.', true);
-                fetchLeaveRequests();
+                showNotificationPopup(result.message);
+                karyawanModal.style.display = 'none';
+                loadKaryawan();
             } else {
-                showNotification('Gagal!', 'Gagal menolak permohonan: ' + result.message, false);
+                showNotificationPopup(result.message, true);
             }
         } catch (error) {
             console.error('Error:', error);
-            showNotification('Gagal!', 'Terjadi kesalahan saat menolak permohonan.', false);
+            showNotificationPopup('Terjadi kesalahan saat menyimpan data.', true);
         }
-
-        rejectModal.style.display = 'none';
-        rejectionReasonTextarea.value = '';
     });
 
-    fetchLeaveRequests();
+    // Initial load
+    loadKaryawan();
 });
