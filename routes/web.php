@@ -11,11 +11,3 @@ Route::get('/admin/login', function () {
     return view('admin.login');
 })->name('admin.login');
 Route::get('/admin', [FrontendController::class, 'showAdminDashboard']);
-
-// routes/web.php
-
-// Tambahkan rute ini untuk halaman manajemen karyawan
-Route::get('/admin/karyawan', function () {
-    return view('admin.karyawan');
-})->middleware('auth:sanctum');
-

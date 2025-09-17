@@ -3,17 +3,14 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\PermohonanCuti;
-use App\Models\Karyawan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\StatusCutiNotification;
+use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
 {
-    // CRUD Permohonan Cuti
     public function index(Request $request)
     {
         $query = PermohonanCuti::with('karyawan');
@@ -100,19 +97,24 @@ class AdminController extends Controller
         $previousStatus = $permohonan->status;
         $newStatus = $request->status;
 
+        // Atur alasan penolakan hanya jika status baru adalah 'Ditolak'
         if ($newStatus === 'Ditolak') {
             if (!$request->alasan_penolakan) {
                 return response()->json(['success' => false, 'message' => 'Alasan penolakan tidak boleh kosong.'], 400);
             }
             $permohonan->alasan_penolakan = $request->alasan_penolakan;
         } else {
+            // Kosongkan alasan penolakan jika status diubah ke 'Disetujui' atau 'Menunggu'
             $permohonan->alasan_penolakan = null;
         }
 
+        // Mengelola jatah cuti berdasarkan perubahan status
         if ($permohonan->jenis_cuti === 'Cuti Tahunan') {
+            // Jika status sebelumnya adalah 'Disetujui' dan status baru bukan 'Disetujui', kembalikan jatah cuti
             if ($previousStatus === 'Disetujui' && $newStatus !== 'Disetujui') {
                 $karyawan->jatah_cuti_tahunan += $permohonan->durasi;
             }
+            // Jika status baru adalah 'Disetujui' dan status sebelumnya bukan 'Disetujui', kurangi jatah cuti
             if ($newStatus === 'Disetujui' && $previousStatus !== 'Disetujui') {
                 if ($permohonan->durasi > $karyawan->jatah_cuti_tahunan) {
                     return response()->json(['success' => false, 'message' => 'Sisa cuti tidak mencukupi!'], 400);
@@ -125,93 +127,11 @@ class AdminController extends Controller
         $permohonan->status = $newStatus;
         $permohonan->save();
 
+        // Kirim notifikasi email setelah status diperbarui
         if ($karyawan) {
             Mail::to($karyawan->email)->send(new StatusCutiNotification($permohonan));
         }
 
         return response()->json(['success' => true, 'message' => 'Status berhasil diperbarui dan notifikasi email telah dikirim.']);
-    }
-
-    // --- Fungsionalitas CRUD Karyawan Baru ---
-
-    public function getKaryawan()
-    {
-        $karyawan = Karyawan::all();
-        return response()->json($karyawan);
-    }
-
-    public function storeKaryawan(Request $request)
-    {
-        $request->validate([
-            'id_karyawan' => 'required|string|unique:karyawan,id_karyawan',
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email|unique:karyawan,email',
-            'unit' => 'required|string|max:255',
-            'password' => 'required|string|min:6',
-            'jatah_cuti_tahunan' => 'required|integer',
-            'is_admin' => 'boolean'
-        ]);
-
-        $karyawan = Karyawan::create([
-            'id_karyawan' => $request->id_karyawan,
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'unit' => $request->unit,
-            'password' => Hash::make($request->password),
-            'jatah_cuti_tahunan' => $request->jatah_cuti_tahunan,
-            'is_admin' => $request->is_admin ?? false
-        ]);
-
-        return response()->json(['message' => 'Karyawan berhasil ditambahkan.', 'data' => $karyawan], 201);
-    }
-
-    public function showKaryawan($id)
-    {
-        $karyawan = Karyawan::find($id);
-        if (!$karyawan) {
-            return response()->json(['message' => 'Karyawan tidak ditemukan.'], 404);
-        }
-        return response()->json($karyawan);
-    }
-
-    public function updateKaryawan(Request $request, $id)
-    {
-        $karyawan = Karyawan::find($id);
-        if (!$karyawan) {
-            return response()->json(['message' => 'Karyawan tidak ditemukan.'], 404);
-        }
-
-        $request->validate([
-            'id_karyawan' => 'required|string|unique:karyawan,id_karyawan,' . $id,
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email|unique:karyawan,email,' . $id,
-            'unit' => 'required|string|max:255',
-            'password' => 'nullable|string|min:6',
-            'jatah_cuti_tahunan' => 'required|integer',
-            'is_admin' => 'boolean'
-        ]);
-
-        $karyawan->id_karyawan = $request->id_karyawan;
-        $karyawan->nama = $request->nama;
-        $karyawan->email = $request->email;
-        $karyawan->unit = $request->unit;
-        if ($request->filled('password')) {
-            $karyawan->password = Hash::make($request->password);
-        }
-        $karyawan->jatah_cuti_tahunan = $request->jatah_cuti_tahunan;
-        $karyawan->is_admin = $request->is_admin ?? false;
-        $karyawan->save();
-
-        return response()->json(['message' => 'Data karyawan berhasil diperbarui.', 'data' => $karyawan]);
-    }
-
-    public function deleteKaryawan($id)
-    {
-        $karyawan = Karyawan::find($id);
-        if (!$karyawan) {
-            return response()->json(['message' => 'Karyawan tidak ditemukan.'], 404);
-        }
-        $karyawan->delete();
-        return response()->json(['message' => 'Karyawan berhasil dihapus.']);
     }
 }

@@ -28,11 +28,12 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     // Rute baru untuk ekspor ke Excel
     Route::get('export-permohonan', [AdminController::class, 'exportToExcel']);
     Route::post('reject/{id}', [AdminController::class, 'rejectPermohonan']);
+});
 
-            // Rute untuk CRUD Karyawan
-        Route::get('/karyawan', [AdminController::class, 'getKaryawan']); // Read (all)
-        Route::post('/karyawan', [AdminController::class, 'storeKaryawan']); // Create
-        Route::get('/karyawan/{id}', [AdminController::class, 'showKaryawan']); // Read (single)
-        Route::put('/karyawan/{id}', [AdminController::class, 'updateKaryawan']); // Update
-        Route::delete('/karyawan/{id}', [AdminController::class, 'deleteKaryawan']); // Delete
+Route::middleware('auth:sanctum')->group(function () {
+    // Rute API untuk admin
+    Route::get('/admin/karyawan', [AdminController::class, 'getKaryawan']);
+    Route::post('/admin/karyawan', [AdminController::class, 'saveKaryawan']);
+    Route::put('/admin/karyawan/{id}', [AdminController::class, 'saveKaryawan']);
+    Route::delete('/admin/karyawan/{id}', [AdminController::class, 'deleteKaryawan']);
 });

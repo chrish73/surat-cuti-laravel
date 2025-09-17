@@ -41,6 +41,11 @@
                 <option value="Wifi">Wifi</option>
             </select>
             <button id="export-excel-btn" class="action-btn">Ekspor ke Excel</button>
+            <a href="/admin/karyawan" class="nav-item">
+            <span class="icon">
+                <img src="{{ asset('images/data-karyawan.png') }}" alt="Data Karyawan Icon">
+            </span>
+            <span class="text">Data Karyawan</span></a>
         </div>
 
         <!-- Tabel Data -->
