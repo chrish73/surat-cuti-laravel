@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\StatusCutiNotification;
 use Illuminate\Validation\ValidationException;
+use App\Models\Karyawan; // Impor model Karyawan
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -97,24 +99,19 @@ class AdminController extends Controller
         $previousStatus = $permohonan->status;
         $newStatus = $request->status;
 
-        // Atur alasan penolakan hanya jika status baru adalah 'Ditolak'
         if ($newStatus === 'Ditolak') {
             if (!$request->alasan_penolakan) {
                 return response()->json(['success' => false, 'message' => 'Alasan penolakan tidak boleh kosong.'], 400);
             }
             $permohonan->alasan_penolakan = $request->alasan_penolakan;
         } else {
-            // Kosongkan alasan penolakan jika status diubah ke 'Disetujui' atau 'Menunggu'
             $permohonan->alasan_penolakan = null;
         }
 
-        // Mengelola jatah cuti berdasarkan perubahan status
         if ($permohonan->jenis_cuti === 'Cuti Tahunan') {
-            // Jika status sebelumnya adalah 'Disetujui' dan status baru bukan 'Disetujui', kembalikan jatah cuti
             if ($previousStatus === 'Disetujui' && $newStatus !== 'Disetujui') {
                 $karyawan->jatah_cuti_tahunan += $permohonan->durasi;
             }
-            // Jika status baru adalah 'Disetujui' dan status sebelumnya bukan 'Disetujui', kurangi jatah cuti
             if ($newStatus === 'Disetujui' && $previousStatus !== 'Disetujui') {
                 if ($permohonan->durasi > $karyawan->jatah_cuti_tahunan) {
                     return response()->json(['success' => false, 'message' => 'Sisa cuti tidak mencukupi!'], 400);
@@ -127,11 +124,78 @@ class AdminController extends Controller
         $permohonan->status = $newStatus;
         $permohonan->save();
 
-        // Kirim notifikasi email setelah status diperbarui
         if ($karyawan) {
             Mail::to($karyawan->email)->send(new StatusCutiNotification($permohonan));
         }
 
         return response()->json(['success' => true, 'message' => 'Status berhasil diperbarui dan notifikasi email telah dikirim.']);
+    }
+
+    public function getKaryawan()
+    {
+        $karyawan = Karyawan::all();
+        return response()->json($karyawan);
+    }
+
+    public function getKaryawanById($id)
+    {
+        $karyawan = Karyawan::findOrFail($id);
+        return response()->json($karyawan);
+    }
+
+    public function saveKaryawan(Request $request, $id = null)
+    {
+        $is_admin = $request->is_admin ?? false;
+
+        $rules = [
+            'nama' => 'required|string|max:255',
+            'unit' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'id_karyawan' => 'required|string|max:255',
+            'is_admin' => 'required|boolean',
+            'jatah_cuti_tahunan' => 'required|integer',
+        ];
+
+        if ($is_admin) {
+            $rules['password'] = 'nullable|min:8';
+        }
+
+        if ($id) {
+            $karyawan = Karyawan::findOrFail($id);
+            $rules['id_karyawan'] = 'required|string|max:255|unique:karyawan,id_karyawan,'.$id;
+            $rules['email'] = 'required|email|max:255|unique:karyawan,email,'.$id;
+
+            $request->validate($rules);
+
+            $karyawan->nama = $request->nama;
+            $karyawan->id_karyawan = $request->id_karyawan;
+            $karyawan->unit = $request->unit;
+            $karyawan->email = $request->email;
+            $karyawan->is_admin = $request->is_admin;
+            $karyawan->jatah_cuti_tahunan = $request->jatah_cuti_tahunan;
+
+            if ($request->filled('password') && $is_admin) {
+                $karyawan->password = Hash::make($request->password);
+            }
+            $karyawan->save();
+        } else {
+            $request->validate($rules);
+
+            $karyawanData = $request->only('nama', 'id_karyawan', 'unit', 'email', 'is_admin', 'jatah_cuti_tahunan');
+            if ($request->filled('password') && $is_admin) {
+                $karyawanData['password'] = Hash::make($request->password);
+            }
+            Karyawan::create($karyawanData);
+        }
+
+        return response()->json(['message' => 'Data karyawan berhasil disimpan!']);
+    }
+
+    public function deleteKaryawan($id)
+    {
+        $karyawan = Karyawan::findOrFail($id);
+        $karyawan->delete();
+
+        return response()->json(['message' => 'Data karyawan berhasil dihapus!']);
     }
 }

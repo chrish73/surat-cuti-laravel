@@ -16,24 +16,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('karyawan/info', [KaryawanController::class, 'getKaryawanInfo']);
     Route::post('permohonan', [KaryawanController::class, 'ajukanPermohonan']);
     Route::get('permohonan/history', [KaryawanController::class, 'getLeaveHistory']);
-    Route::get('permohonan/download-surat/{id}', [KaryawanController::class, 'downloadSuratPersetujuan']); // Tambahkan baris ini
+    Route::get('permohonan/download-surat/{id}', [KaryawanController::class, 'downloadSuratPersetujuan']);
 });
 
 // Rute untuk Admin (dilindungi oleh middleware 'auth:sanctum')
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('permohonan', [AdminController::class, 'index']);
     Route::post('change-status', [AdminController::class, 'changeStatus']);
-    Route::post('revert-status', [AdminController::class, 'revertStatus']);
-    // Route::get('view-file/{fileName}', [AdminController::class, 'viewFile']);
-    // Rute baru untuk ekspor ke Excel
+    // Route::post('revert-status', [AdminController::class, 'revertStatus']); // Baris ini tidak ada di controller, saya komentari
     Route::get('export-permohonan', [AdminController::class, 'exportToExcel']);
     Route::post('reject/{id}', [AdminController::class, 'rejectPermohonan']);
-});
-
-Route::middleware('auth:sanctum')->group(function () {
     // Rute API untuk admin
-    Route::get('/admin/karyawan', [AdminController::class, 'getKaryawan']);
-    Route::post('/admin/karyawan', [AdminController::class, 'saveKaryawan']);
-    Route::put('/admin/karyawan/{id}', [AdminController::class, 'saveKaryawan']);
-    Route::delete('/admin/karyawan/{id}', [AdminController::class, 'deleteKaryawan']);
+    Route::get('karyawan', [AdminController::class, 'getKaryawan']);
+    Route::get('karyawan/{id}', [AdminController::class, 'getKaryawanById']);
+    Route::post('karyawan', [AdminController::class, 'saveKaryawan']);
+    Route::put('karyawan/{id}', [AdminController::class, 'saveKaryawan']);
+    Route::delete('karyawan/{id}', [AdminController::class, 'deleteKaryawan']);
 });

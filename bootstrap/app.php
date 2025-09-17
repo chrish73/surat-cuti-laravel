@@ -12,7 +12,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Daftarkan middleware alias di sini
+        $middleware->alias([
+            'is.admin' => \App\Http\Middleware\IsAdmin::class,
+        ]);
+
+        // Contoh untuk middleware group jika diperlukan
+        // $middleware->web(append: [
+        //     //
+        // ]);
+
+        // $middleware->api(prepend: [
+        //     //
+        // ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

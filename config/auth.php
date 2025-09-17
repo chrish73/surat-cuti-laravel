@@ -15,7 +15,7 @@ return [
 
     'defaults' => [
         'guard' => env('AUTH_GUARD', 'web'),
-        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+        'passwords' => env('AUTH_PASSWORD_BROKER', 'karyawan'), // Ubah ini
     ],
 
     /*
@@ -38,13 +38,13 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'karyawan', // Ubah dari 'users'
         ],
 
         // Konfigurasi API guard untuk Sanctum
         'api' => [
             'driver' => 'sanctum',
-            'provider' => 'users',
+            'provider' => 'karyawan', // Ubah dari 'users'
         ],
     ],
 
@@ -66,14 +66,19 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'karyawan' => [ // Buat provider baru
+            'driver' => 'eloquent',
+            'model' => App\Models\Karyawan::class,
+        ],
+
+        'users' => [ // Pertahankan jika ada kebutuhan lain, atau hapus jika tidak digunakan
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
 
         // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
+        //     'driver' => 'database',
+        //     'table' => 'users',
         // ],
     ],
 
@@ -97,6 +102,13 @@ return [
     */
 
     'passwords' => [
+        'karyawan' => [ // Ubah dari 'users'
+            'provider' => 'karyawan', // Ubah dari 'users'
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
         'users' => [
             'provider' => 'users',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
