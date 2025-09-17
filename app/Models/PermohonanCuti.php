@@ -7,7 +7,7 @@ class PermohonanCuti extends Model
 {
     use HasFactory;
     protected $table = 'permohonan_cuti';
-    protected $fillable = ['karyawan_id', 'jenis_cuti', 'tanggal_mulai', 'tanggal_selesai', 'durasi', 'alasan', 'alamat_selama_cuti', 'lampiran_file', 'status'];
+    protected $fillable = ['karyawan_id', 'jenis_cuti', 'tanggal_mulai', 'tanggal_selesai', 'durasi', 'alasan', 'alamat_selama_cuti', 'lampiran_file', 'status', 'alasan_penolakan']; // Tambahkan 'alasan_penolakan'
     public function karyawan()
     {
         return $this->belongsTo(Karyawan::class);
