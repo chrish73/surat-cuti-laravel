@@ -5,26 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Halaman Admin - Data Karyawan</title>
-    {{-- <link rel="stylesheet" href="{{ asset('css/stel.css') }}"> --}}
-    <style>
-        /* Gaya tambahan khusus untuk halaman ini */
-        .card-form {
-            background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .form-group.checkbox-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .form-group.checkbox-group label {
-            margin-bottom: 0;
-            margin-left: 10px;
-        }
-    </style>
+ <link rel="stylesheet" href="{{ asset('css/datel.css') }}">
 </head>
 <body>
 

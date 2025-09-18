@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
@@ -10,6 +11,7 @@ use App\Mail\StatusCutiNotification;
 use Illuminate\Validation\ValidationException;
 use App\Models\Karyawan; // Impor model Karyawan
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Response; // Tambahkan ini
 
 class AdminController extends Controller
 {
@@ -29,6 +31,7 @@ class AdminController extends Controller
 
     public function exportToExcel(Request $request)
     {
+        // Ambil data dari database, filter berdasarkan unit jika ada
         $query = PermohonanCuti::with('karyawan');
 
         if ($request->has('unit') && $request->unit != '') {
@@ -39,16 +42,21 @@ class AdminController extends Controller
 
         $permohonanCuti = $query->orderBy('created_at', 'desc')->get();
 
-        $timestamp = now()->format('d-m-Y');
-        $fileName = 'Riwayat cuti karyawan Telkom_' . $timestamp . '.csv';
+        // Tentukan nama file
+        $timestamp = now()->format('Y-m-d_H-i-s');
+        $fileName = 'riwayat_cuti_' . ($request->unit ? $request->unit . '_' : '') . $timestamp . '.csv';
 
+        // Definisikan header respons untuk pengunduhan file
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
         ];
 
+        // Buat callback untuk menangani pembuatan dan penulisan file CSV
         $callback = function() use ($permohonanCuti) {
             $file = fopen('php://output', 'w');
+
+            // Baris header
             fputcsv($file, [
                 'Nama Karyawan',
                 'ID Karyawan',
@@ -62,11 +70,12 @@ class AdminController extends Controller
                 'Status'
             ]);
 
+            // Loop melalui data dan tambahkan ke CSV
             foreach ($permohonanCuti as $permohonan) {
                 fputcsv($file, [
-                    $permohonan->karyawan->nama ?? '',
-                    $permohonan->karyawan->id_karyawan ?? '',
-                    $permohonan->karyawan->unit ?? '',
+                    $permohonan->karyawan->nama ?? 'Tidak Ada',
+                    $permohonan->karyawan->id_karyawan ?? 'Tidak Ada',
+                    $permohonan->karyawan->unit ?? 'Tidak Ada',
                     $permohonan->jenis_cuti,
                     $permohonan->tanggal_mulai,
                     $permohonan->tanggal_selesai,
@@ -76,10 +85,12 @@ class AdminController extends Controller
                     $permohonan->status
                 ]);
             }
+
             fclose($file);
         };
 
-        return response()->streamDownload($callback, $fileName, $headers);
+        // Mengembalikan respons streaming yang akan mengunduh file
+        return new StreamedResponse($callback, 200, $headers);
     }
 
     public function changeStatus(Request $request)

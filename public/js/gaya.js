@@ -9,12 +9,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeRejectModal = document.getElementById('close-reject-modal');
     const confirmRejectBtn = document.getElementById('confirm-reject-btn');
     const rejectionReasonTextarea = document.getElementById('rejection-reason');
+    const buttonText = document.getElementById('button-text');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    // Ambil elemen overlay loading
+    const loadingOverlay = document.getElementById('loading-overlay');
     let currentPermohonanId = null;
 
     if (!token || isAdmin !== 'true') {
         window.location.href = '/admin/login';
         return;
     }
+
+    // Fungsi untuk mengontrol loading overlay global
+    const showGlobalLoading = (show) => {
+        if (show) {
+            loadingOverlay.classList.add('visible');
+        } else {
+            loadingOverlay.classList.remove('visible');
+        }
+    };
+
+    // Fungsi untuk mengontrol loading pada tombol tolak
+    const showRejectButtonLoading = (isLoading) => {
+        if (isLoading) {
+            confirmRejectBtn.disabled = true;
+            buttonText.textContent = 'Memproses...';
+            loadingSpinner.classList.remove('hidden');
+        } else {
+            confirmRejectBtn.disabled = false;
+            buttonText.textContent = 'Kirim Penolakan';
+            loadingSpinner.classList.add('hidden');
+        }
+    };
 
     const showNotificationPopup = (type, message) => {
         const popupOverlay = document.getElementById('notification-popup');
@@ -55,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const changeStatus = async (id, newStatus, alasanPenolakan = null) => {
+        showGlobalLoading(true); // Tampilkan loading global
         try {
             const response = await fetch('/api/admin/change-status', {
                 method: 'POST',
@@ -75,6 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error:', error);
             showNotificationPopup('error', 'Terjadi kesalahan pada server.');
+        } finally {
+            showGlobalLoading(false); // Sembunyikan loading global setelah proses selesai
         }
     };
 
@@ -115,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.reject-btn').forEach(button => {
             button.addEventListener('click', (e) => {
                 currentPermohonanId = e.target.dataset.id;
-                rejectModal.style.display = 'flex';
+                rejectModal.classList.add('active');
             });
         });
 
@@ -145,8 +174,8 @@ document.addEventListener('DOMContentLoaded', () => {
             tableBody.innerHTML = '';
 
             if (requests.length === 0) {
-                 tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;">Tidak ada permohonan cuti.</td></tr>';
-                 return;
+                tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;">Tidak ada permohonan cuti.</td></tr>';
+                return;
             }
 
             requests.forEach(req => {
@@ -204,6 +233,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const unitFilter = unitFilterSelect.value;
             const exportUrl = unitFilter ? `/api/admin/export-permohonan?unit=${unitFilter}` : `/api/admin/export-permohonan`;
 
+            showGlobalLoading(true); // Tampilkan loading global untuk export
+
             try {
                 const response = await fetch(exportUrl, {
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -232,12 +263,14 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 console.error('Error during export:', error);
                 showNotificationPopup('error', 'Gagal mengunduh file. Mohon coba lagi.');
+            } finally {
+                showGlobalLoading(false); // Sembunyikan loading global setelah proses selesai
             }
         });
     }
 
     closeRejectModal.addEventListener('click', () => {
-        rejectModal.style.display = 'none';
+        rejectModal.classList.remove('active');
         rejectionReasonTextarea.value = '';
     });
 
@@ -248,9 +281,21 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        await changeStatus(currentPermohonanId, 'Ditolak', reason);
-        rejectModal.style.display = 'none';
-        rejectionReasonTextarea.value = '';
+        showRejectButtonLoading(true);
+        try {
+            await changeStatus(currentPermohonanId, 'Ditolak', reason);
+        } finally {
+            showRejectButtonLoading(false);
+            rejectModal.classList.remove('active');
+            rejectionReasonTextarea.value = '';
+        }
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === rejectModal) {
+            rejectModal.classList.remove('active');
+            rejectionReasonTextarea.value = '';
+        }
     });
 
     loadRequests();

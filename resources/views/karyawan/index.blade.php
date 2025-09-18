@@ -81,12 +81,12 @@
                             <label for="file-attach">File Perizinan Dikirim Melalui Email (admin@gmail.com)<span class="note-red-inline">*Surat bisa menyusul</span></label>
                             <input type="file" id="file-attach" class="file-hidden-input" accept=".pdf, .doc, .docx, .jpg, .jpeg, .png, .heic, .mov, .mp4, .xml">
                             <div class="custom-file-upload">
-                                <label for="file-attach" class="upload-button">
+                                <!-- <label for="file-attach" class="upload-button">
                                     <i class="fas fa-upload"></i> <span class="button-text">Pilih File</span>
-                                </label>
-                                <span id="file-name-display" class="file-name-display">Belum ada file dipilih</span>
+                                </label> -->
+                                <!-- <span id="file-name-display" class="file-name-display">Belum ada file dipilih</span> -->
+                                <a href="https://mail.google.com/mail/u/0/#inbox">Masuk Email</a>
                             </div>
-                            <a href="https://mail.google.com/mail/u/0/#inbox">Masuk Email</a>
                         </div>
                         <button type="submit" class="submit-btn">Ajukan Permohonan</button>
                     </form>

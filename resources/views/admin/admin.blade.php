@@ -93,9 +93,20 @@
         <h4 id="popup-title">Tolak Permohonan</h4>
         <p>Silakan masukkan alasan penolakan:</p>
         <textarea id="rejection-reason" rows="4" class="form-control" required></textarea>
-        <button id="confirm-reject-btn" class="action-btn">Kirim Penolakan</button>
+        <button id="confirm-reject-btn" class="action-btn action-btn-reject">
+            <span id="button-text">Kirim Penolakan</span>
+            <span id="loading-spinner" class="spinner hidden"></span>
+        </button>
     </div>
 </div>
+
+<div id="loading-overlay" class="loading-overlay hidden">
+    <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <p>Harap Ditunggu...</p>
+    </div>
+</div>
+
 
 <!-- JavaScript -->
 <script src="{{ asset('js/gaya.js') }}"></script>

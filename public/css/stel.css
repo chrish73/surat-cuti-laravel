@@ -492,3 +492,194 @@ tr:hover {
     margin-bottom: 0;
     margin-left: 10px;
 }
+
+/* Container modal - overlay */
+.popup-modal {
+    display: none; /* Sembunyikan secara default */
+    position: fixed; /* Posisi tetap agar tidak bergerak saat digulir */
+    z-index: 1000; /* Pastikan di atas elemen lain */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Aktifkan gulir jika konten terlalu besar */
+    background-color: rgba(0, 0, 0, 0.4); /* Latar belakang semi-transparan */
+    justify-content: center; /* Pusatkan secara horizontal */
+    align-items: center; /* Pusatkan secara vertikal */
+}
+
+/* Konten modal */
+.popup-modal .popup-content {
+    background-color: #fff; /* Latar belakang putih */
+    margin: auto; /* Pusatkan konten */
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 450px; /* Batasi lebar maksimal */
+    position: relative;
+    text-align: left;
+    transform: scale(0.95);
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    opacity: 0;
+}
+
+/* Animasi saat modal aktif (muncul) */
+.popup-modal.active {
+    display: flex; /* Gunakan flexbox untuk pemusatan */
+}
+
+.popup-modal.active .popup-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Tombol tutup modal */
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: #333;
+    text-decoration: none;
+}
+
+/* Gaya tambahan untuk elemen di dalam modal */
+.popup-modal h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.popup-modal textarea {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box; /* Agar padding tidak menambah lebar */
+    resize: vertical;
+}
+
+.popup-modal .action-btn {
+    width: 100%;
+}
+
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #fff;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+.spinner.hidden {
+    display: none;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.action-btn-reject {
+    background-color: #dc3545; /* Warna merah */
+    color: white;
+    border: none;
+}
+
+.action-btn-reject:hover {
+    background-color: #c82333; /* Warna merah yang lebih gelap saat dihover */
+}
+
+/* Perbarui juga gaya spinner agar kontras dengan latar belakang merah */
+.action-btn-reject .spinner {
+    border-color: rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+}
+
+.action-btn {
+    /* Gaya dasar yang mungkin sudah ada, pastikan konsisten */
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 8px; /* Membuat sudut tombol lebih membulat */
+    transition: all 0.3s ease; /* Menambahkan transisi untuk semua properti */
+}
+
+.action-btn-reject {
+    background-color: #dc3545; /* Warna merah */
+    color: white;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Bayangan untuk efek 3D */
+}
+
+.action-btn-reject:hover {
+    background-color: #c82333; /* Warna merah lebih gelap saat di-hover */
+    transform: translateY(-2px); /* Tombol terangkat sedikit saat di-hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Bayangan lebih besar saat di-hover */
+}
+
+/* Gaya untuk spinner agar terlihat menyatu dengan tombol */
+.action-btn-reject .spinner {
+    border-color: rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+}
+
+/* --- Loading Overlay --- */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Latar belakang agak gelap */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Pastikan di atas semua elemen lain */
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loading-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loading-content {
+    text-align: center;
+    color: white;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

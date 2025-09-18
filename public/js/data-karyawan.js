@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         karyawan.forEach(k => {
             const row = document.createElement('tr');
+            row.dataset.id = k.id; // Tambahkan atribut data-id
             row.innerHTML = `
                 <td>${k.id_karyawan}</td>
                 <td>${k.nama}</td>
@@ -65,58 +66,79 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${k.jatah_cuti_tahunan} Hari</td>
                 <td>${k.is_admin ? 'Ya' : 'Tidak'}</td>
                 <td>
-                    <button class="action-btn edit-btn" data-id="${k.id}">Edit</button>
-                    <button class="action-btn delete-btn" data-id="${k.id}">Hapus</button>
+                    <button class="action-btn btn-edit" data-id="${k.id}">Edit</button>
+                    <button class="action-btn btn-hapus" data-id="${k.id}">Hapus</button>
                 </td>
             `;
             karyawanList.appendChild(row);
         });
 
-        document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', handleEdit));
-        document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', handleDelete));
+        // Hapus event listener lama dan tambahkan yang baru setiap kali tabel dirender
+        // Cara ini kurang efisien, lebih baik menggunakan event delegation
+        // Tapi untuk saat ini, ini akan berfungsi dengan baik.
+        // document.querySelectorAll('.btn-edit').forEach(btn => btn.addEventListener('click', handleEdit));
+        // document.querySelectorAll('.btn-hapus').forEach(btn => btn.addEventListener('click', handleDelete));
     };
 
-    const handleEdit = async (e) => {
-        const id = e.target.dataset.id;
-        try {
-            const response = await fetch(`/api/admin/karyawan/${id}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (!response.ok) {
-                throw new Error('Gagal mengambil data karyawan.');
-            }
-            const k = await response.json();
-            formTitle.textContent = 'Edit Data Karyawan';
-            karyawanIdInput.value = k.id;
-            namaInput.value = k.nama;
-            idKaryawanInput.value = k.id_karyawan;
-            emailInput.value = k.email;
-            unitInput.value = k.unit;
-            jatahCutiInput.value = k.jatah_cuti_tahunan;
-            isAdminCheckbox.checked = k.is_admin;
-            passwordGroup.style.display = k.is_admin ? 'block' : 'none';
-            passwordInput.required = false; // Password is not required for editing
-            cancelEditBtn.style.display = 'inline-block';
-        } catch (error) {
-            alert('Terjadi kesalahan saat mengedit data.');
-            console.error('Error:', error);
-        }
+    // Fungsi untuk menampilkan atau menyembunyikan modal
+    const toggleDeleteModal = (show) => {
+        deleteModal.style.display = show ? 'flex' : 'none';
     };
 
-    const handleDelete = (e) => {
-        currentKaryawanIdToDelete = e.target.dataset.id;
-        deleteModal.style.display = 'flex';
-    };
-
+    // Fungsi untuk mereset form ke mode "Tambah Karyawan Baru"
     const resetForm = () => {
         form.reset();
         formTitle.textContent = 'Tambah Karyawan Baru';
         karyawanIdInput.value = '';
-        passwordGroup.style.display = 'none';
-        passwordInput.required = false;
+        idKaryawanInput.disabled = false; // Aktifkan kembali input ID Karyawan
+        passwordGroup.style.display = 'block'; // Tampilkan password
+        passwordInput.required = true;
         cancelEditBtn.style.display = 'none';
+        form.querySelector('button[type="submit"]').textContent = 'Simpan Data';
     };
 
+    // Event Delegation untuk tombol Edit dan Hapus di tabel
+    // Ini lebih efisien daripada menambahkan event listener ke setiap tombol
+    karyawanList.addEventListener('click', async (event) => {
+        const target = event.target;
+        if (target.classList.contains('btn-edit')) {
+            const id = target.dataset.id;
+            try {
+                const response = await fetch(`/api/admin/karyawan/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) {
+                    throw new Error('Gagal mengambil data karyawan.');
+                }
+                const k = await response.json();
+                
+                // Isi form dengan data yang diambil
+                formTitle.textContent = 'Edit Data Karyawan';
+                karyawanIdInput.value = k.id; // Ini adalah ID database
+                namaInput.value = k.nama;
+                idKaryawanInput.value = k.id_karyawan; // Ini adalah ID Karyawan (Perner)
+                idKaryawanInput.disabled = true; // Non-aktifkan input ID Karyawan saat edit
+                emailInput.value = k.email;
+                unitInput.value = k.unit;
+                jatahCutiInput.value = k.jatah_cuti_tahunan;
+                isAdminCheckbox.checked = k.is_admin;
+                
+                // Logika untuk menampilkan/menyembunyikan password dan tombol
+                passwordGroup.style.display = k.is_admin ? 'block' : 'none';
+                passwordInput.required = false; // Password tidak wajib saat edit
+                cancelEditBtn.style.display = 'inline-block';
+                form.querySelector('button[type="submit"]').textContent = 'Update Data';
+            } catch (error) {
+                alert('Terjadi kesalahan saat mengedit data.');
+                console.error('Error:', error);
+            }
+        } else if (target.classList.contains('btn-hapus')) {
+            currentKaryawanIdToDelete = target.dataset.id;
+            toggleDeleteModal(true);
+        }
+    });
+
+    // Event Listener untuk tombol Simpan/Update
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = karyawanIdInput.value;
@@ -156,16 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    cancelEditBtn.addEventListener('click', resetForm);
-
-    closeDeleteModal.addEventListener('click', () => {
-        deleteModal.style.display = 'none';
-    });
-
-    cancelDeleteBtn.addEventListener('click', () => {
-        deleteModal.style.display = 'none';
-    });
-
+    // Event Listener untuk modal Hapus
     confirmDeleteBtn.addEventListener('click', async () => {
         try {
             const response = await fetch(`/api/admin/karyawan/${currentKaryawanIdToDelete}`, {
@@ -183,9 +196,13 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Terjadi kesalahan pada server.');
             console.error('Error:', error);
         } finally {
-            deleteModal.style.display = 'none';
+            toggleDeleteModal(false);
         }
     });
+
+    closeDeleteModal.addEventListener('click', () => toggleDeleteModal(false));
+    cancelDeleteBtn.addEventListener('click', () => toggleDeleteModal(false));
+    cancelEditBtn.addEventListener('click', resetForm);
 
     loadKaryawan();
 });
