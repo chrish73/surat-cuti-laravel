@@ -1,0 +1,320 @@
+/* Gaya Umum */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f9;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+
+/* Header dan Logo */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+    margin-bottom: 20px;
+}
+
+.header-container img {
+    height: 40px;
+}
+
+.header-container h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a237e;
+    margin: 0;
+}
+
+/* Card dan Form */
+.card-form {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+}
+
+.card-form h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-group label {
+    margin-left: 10px;
+    margin-bottom: 0;
+}
+
+.action-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.action-btn:hover {
+    background-color: #45a049;
+}
+
+/* Tabel Karyawan */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table thead tr {
+    background-color: #1a237e;
+    color: #fff;
+    text-align: left;
+    font-weight: bold;
+}
+
+table th, table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+table tbody tr:hover {
+    background-color: #e8e8e8;
+}
+
+/* Perbaikan untuk merapikan tombol */
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-edit, .btn-hapus {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    font-weight: 500;
+    margin: 0; /* Hapus margin yang tidak perlu */
+}
+
+.btn-edit {
+    background-color: #2196F3;
+}
+
+.btn-edit:hover {
+    background-color: #0b7dda;
+}
+
+.btn-hapus {
+    background-color: #f44336;
+}
+
+.btn-hapus:hover {
+    background-color: #da190b;
+}
+
+/* Modal Konfirmasi */
+.popup-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.close-btn:hover {
+    color: #333;
+}
+
+.popup-content button {
+    margin: 5px;
+}
+
+.popup-content h4 {
+    margin-top: 0;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 30px;
+    color: #777;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    /* Main container and body adjustments */
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    /* Adjust logo and header for smaller screens */
+    .top-left-logo {
+        position: static; /* Let the logo flow naturally */
+        display: block;
+        margin: 0 auto 20px auto; /* Center the logo and add bottom margin */
+        width: 150px; /* Adjust logo size */
+    }
+
+    header h2 {
+        position: static;
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 15px;
+        font-size: 1.5em; /* Make the heading smaller */
+    }
+
+    /* Form section adjustments */
+    .card-form {
+        padding: 15px;
+    }
+
+    /* Responsive table for Daftar Karyawan */
+    .table-container {
+        overflow-x: auto; /* Allow horizontal scrolling if needed */
+        -webkit-overflow-scrolling: touch; /* Add momentum scrolling on iOS */
+    }
+
+    table {
+        display: block;
+        width: 100%;
+    }
+
+    thead {
+        display: none; /* Hide the table header on small screens */
+    }
+
+    tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        padding: 10px;
+    }
+
+    td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border-bottom: 1px solid #eee;
+    }
+    
+    td:last-child {
+        border-bottom: none;
+    }
+
+    /* Add a pseudo-element to show the original column header */
+    td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        text-align: left;
+        font-weight: bold;
+        color: #555;
+    }
+    
+    /* Specific adjustments for each column */
+    td:nth-of-type(1)::before { content: "No"; }
+    td:nth-of-type(2)::before { content: "Perner"; }
+    td:nth-of-type(3)::before { content: "Nama"; }
+    td:nth-of-type(4)::before { content: "Unit"; }
+    td:nth-of-type(5)::before { content: "Email"; }
+    td:nth-of-type(6)::before { content: "Jatah Cuti"; }
+    td:nth-of-type(7)::before { content: "Admin?"; }
+    td:nth-of-type(8)::before { content: "Aksi"; }
+
+    /* Button adjustments */
+    .action-btn {
+        width: 100%;
+        margin-top: 50px;
+    }
+}

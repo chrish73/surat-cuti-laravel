@@ -1,0 +1,698 @@
+/* Warna-warna utama dari logo */
+:root {
+    --infranexia-red: #E12A34;
+    --infranexia-blue: #007bff;
+    --infranexia-dark: #343a40;
+    --infranexia-grey-light: #f8f9fa;
+    --infranexia-white: #ffffff;
+    --text-color: #495057;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--infranexia-grey-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding-top: 30px;
+    padding-bottom: 50px;
+}
+
+.page-content {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInSlideUp 0.8s forwards ease-out;
+    width: 90%;
+    max-width: 900px;
+}
+
+@keyframes fadeInSlideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.main-card-container {
+    display: flex;
+    max-width: 900px;
+    width: 90%;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.left-panel {
+    flex: 1;
+    padding: 40px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.right-panel {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: #e9ecef;
+}
+
+.right-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Penataan elemen di dalam left-panel */
+.card-logo-container {
+    width: 100%;
+    max-width: 860px;
+    margin-bottom: 15px;
+    
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.card-logo-container.sticky-hide {
+    transform: translateY(-150%);
+    opacity: 0;
+}
+
+.card-logo-container img {
+    max-width: 200px;
+    max-height: 40px;
+    width: auto;
+    height: auto;
+    filter: none;
+}
+
+.card-container {
+    width: 100%;
+    max-width: 900px;
+}
+
+.card {
+    background-color: var(--infranexia-white);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.card-logo-container-login {
+    margin-bottom: 30px;
+}
+.card-logo-container-login img {
+    max-height: 40px;
+    width: auto;
+}
+
+.form-section h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.form-group label {
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.form-row span {
+    position:static;
+    padding-bottom: 20px;
+}
+
+#leave-summary-note {
+    margin-top: 5px; /* Jarak dari input di atasnya */
+    display: block; /* Pastikan ia berada di baris baru */
+    bottom: -35px; /* Jarak dari bawah elemen induk yang sudah disesuaikan */
+    left: 0;
+    width: 100%;
+    font-size: 12px;
+    color: #dc3545; /* Contoh warna merah untuk keterangan */
+    word-wrap: break-word;
+}
+
+/* Styling untuk halaman login agar tidak terjadi tabrakan dengan form-group lain */
+.login-form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 380px;
+}
+
+.login-form-group label {
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 600;
+}
+
+.login-form-group .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.login-form-group .form-control:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+/* Penyesuaian untuk elemen select agar terlihat seragam */
+.login-form-group select.form-control {
+    /* Tambahan styling jika diperlukan */
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.submit-btn {
+    background-color: #4a90e2;
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.submit-btn:hover {
+    background-color: #357bd8;
+}
+
+/* sssssssssssssssssssssssssssssssssssssssssssss*/
+.card-logo-container.sticky-hide {
+    transform: translateY(-150%);
+    opacity: 0;
+}
+
+.card-logo-container img {
+    max-width: 200px;
+    max-height: 40px;
+    width: auto;
+    height: auto;
+    filter: none;
+}
+
+.employee-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.profile-pic {
+    background-color: var(--infranexia-blue);
+    color: var(--infranexia-white);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+}
+
+.info-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px 30px;
+}
+
+.info-item .label {
+    font-weight: 600;
+    color: var(--infranexia-dark);
+    display: block;
+    margin-bottom: 2px;
+}
+
+.info-item .value {
+    color: var(--text-color);
+}
+
+h2, h3 {
+    color: var(--infranexia-dark);
+    font-weight: 600;
+    margin-top: 0;
+}
+
+
+.form-row .form-group {
+    flex: 1;
+    position: relative; /* Penting untuk penempatan keterangan */
+}
+
+/* Aturan khusus untuk Tanggal Mulai dan Tanggal Selesai */
+.form-row:nth-of-type(2) .form-group {
+    flex-basis: calc(50% - 10px);
+}
+
+/* Aturan khusus untuk Jenis Cuti */
+.form-row:nth-of-type(1) .form-group {
+    flex-basis: 100%;
+}
+
+/* Ganti seluruh blok kode .form-control dan turunannya dengan kode ini */
+.form-control,
+select.form-control {
+    width: 100%; /* Lebar default 100% dari parent */
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+/* Aturan khusus untuk input tanggal */
+input[type="date"].form-control {
+    flex: 1; /* Agar box tanggal berbagi ruang secara merata */
+    min-width: 150px;
+    height: 44px;
+}
+
+/* Aturan khusus untuk select (Jenis Cuti) */
+select.form-control {
+    width: 100%;
+    height: 44px;
+    /* Memberi jarak yang cukup agar terlihat lebih panjang */
+    max-width: 850px;
+}
+
+/* Aturan khusus untuk textarea (Alasan Cuti & Alamat) */
+textarea.form-control {
+    width: 100%;
+    height: 100px; /* Atur tinggi awal yang lebih besar */
+    resize: vertical;
+    max-width: none;
+}
+
+/* Biarkan aturan fokus seperti ini */
+.form-control:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+/* --- Perbaikan pada layout form-row --- */
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.form-row:nth-of-type(2) .form-group {
+    flex: 1 1 calc(50% - 10px);
+}
+
+.submit-btn {
+    background-color: var(--infranexia-red);
+    color: var(--infranexia-white);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: flex-start;
+    margin-top: 15px;
+}
+
+.submit-btn:hover {
+    background-color: #C82333;
+}
+
+.history-section {
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.history-table th, .history-table td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.history-table th {
+    background-color: var(--infranexia-grey-light);
+    font-weight: 600;
+    color: var(--infranexia-dark);
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+}
+
+.status.approved {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status.pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status.rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.note-red, .note-red-inline {
+    color: var(--infranexia-red);
+    font-size: 12px;
+    font-style: italic;
+    font-weight: normal;
+}
+
+.note-red-inline {
+    margin-left: 5px;
+}
+
+.note-grey-inline {
+    color: var(--infranexia-dark);
+    font-size: 12px;
+    margin-left: 5px;
+    font-weight: normal;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.popup-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: var(--infranexia-white);
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transform: scale(0.8);
+    transition: transform 0.3s ease-in-out;
+}
+
+.popup-modal.show .popup-content {
+    transform: scale(1);
+}
+
+.icon-container {
+    margin-bottom: 20px;
+}
+
+.check-icon {
+    font-size: 60px;
+    color: #28a745;
+    animation: bounce 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) both;
+}
+
+h3 {
+    margin: 0 0 10px 0;
+    color: var(--infranexia-dark);
+    font-size: 24px;
+}
+
+p {
+    margin: 0;
+    color: var(--text-color);
+}
+
+@keyframes bounce {
+    0% { transform: scale(0); }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.file-hidden-input {
+    display: none;
+}
+
+.custom-file-upload {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: var(--infranexia-grey-light);
+    padding: 10px;
+}
+
+.upload-button {
+    background-color: var(--infranexia-red);
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.upload-button i,
+.upload-button .button-text {
+    color: var(--infranexia-white);
+}
+
+.upload-button:hover {
+    background-color: #C82333;
+}
+
+.file-name-display {
+    font-size: 14px;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+.exclamation-icon {
+    font-size: 60px;
+    color: #ffc107;
+    animation: bounce 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) both;
+}
+
+/* Layout Mobile */
+@media (max-width: 768px) {
+    /* Container Utama */
+    .main-card-container {
+        flex-direction: column;
+        width: 95%; /* Mengatur lebar agar responsif */
+        margin: 20px auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: block; /* Pastikan ia memperlakukan konten sebagai blok */
+    }
+
+    /* Panel Kiri */
+    .left-panel {
+        padding: 20px; /* Padding untuk seluruh konten di dalam panel kiri */
+        background-color: #fff;
+        box-sizing: border-box; /* Penting */
+    }
+
+    /* Panel Kanan */
+    .right-panel {
+        display: none; /* Sembunyikan panel kanan di mobile */
+    }
+
+    /* Form Section */
+    .form-section {
+        padding: 0; /* Hapus padding agar tidak ada konflik */
+        width: 100%; /* Pastikan ia mengambil lebar penuh */
+        box-sizing: border-box; /* Penting */
+    }
+
+    .form-section h2 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        text-align: left;
+    }
+
+    /* Perbaikan Khusus untuk Login Form */
+    .login-form-group {
+        margin-bottom: 15px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .login-form-group label {
+        display: block;
+        margin-bottom: 8px;
+    }
+    
+    /* Gunakan selektor anak untuk menargetkan class umum */
+    .login-form-group .form-control {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        box-sizing: border-box; /* Sangat penting untuk mencegah meluber */
+    }
+
+    /* Perbaikan Tombol Submit */
+    .submit-btn {
+        width: 100%;
+        padding: 15px;
+        margin-top: 20px;
+        font-size: 18px;
+        box-sizing: border-box;
+    }
+
+
+    /* Perbaikan Tabel */
+    .leave-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .leave-table {
+        width: 100%;
+        min-width: 450px;
+        border-collapse: collapse;
+    }
+    
+    .leave-table th,
+    .leave-table td {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        padding: 8px;
+        text-align: left;
+        white-space: normal;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .leave-table th:nth-child(1), .leave-table td:nth-child(1) { width: 30%; }
+    .leave-table th:nth-child(2), .leave-table td:nth-child(2) { width: 25%; }
+    .leave-table th:nth-child(3), .leave-table td:nth-child(3) { width: 20%; }
+    .leave-table th:nth-child(4), .leave-table td:nth-child(4) { width: 25%; }
+
+    /* Aturan tambahan untuk perbaikan tata letak spesifik */
+    .card-logo-container .employee-info p {
+        word-wrap: break-word;
+    }
+    
+    .employee-info-row .employee-info-item {
+        flex: 1 1 100%; /* Setiap item mengambil 100% lebar di mobile */
+    }
+}
+/*/////////////////////////////////////////////////////////////*/
+
+/* --- Loading Overlay --- */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loading-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loading-content {
+    text-align: center;
+    color: white;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
