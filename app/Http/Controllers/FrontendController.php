@@ -16,4 +16,9 @@ class FrontendController extends Controller
     {
         return view('admin.admin');
     }
+
+    public function showManajerPage()
+    {
+        return view('admin.manajer');
+    }
 }

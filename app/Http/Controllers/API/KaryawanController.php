@@ -4,7 +4,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PermohonanCuti;
 use App\Models\Karyawan;
+use App\Models\Manajer;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 class KaryawanController extends Controller
 {
     public function getKaryawanInfo(Request $request)
@@ -50,23 +52,38 @@ class KaryawanController extends Controller
         return response()->json(['message' => 'Permohonan berhasil diajukan!']);
     }
 
-    public function downloadSuratPersetujuan(Request $request, $id)
-    {
-        $permohonan = PermohonanCuti::with('karyawan')->find($id);
+public function downloadSuratPersetujuan(Request $request, $id)
+{
+    $permohonan = PermohonanCuti::with('karyawan')->find($id);
 
-        if (!$permohonan || $permohonan->karyawan->id !== $request->user()->id || $permohonan->status !== 'Disetujui') {
-            return response()->json(['message' => 'Surat tidak ditemukan atau belum disetujui.'], 404);
-        }
-
-        $data = [
-            'permohonan' => $permohonan,
-            'karyawan' => $permohonan->karyawan,
-            'tanggal_cetak' => now()->format('d F Y')
-        ];
-
-        $pdf = PDF::loadView('surat-persetujuan-cuti', $data);
-
-        $fileName = 'Surat_Persetujuan_Cuti_' . $permohonan->karyawan->id_karyawan . '_' . $permohonan->tanggal_mulai . '.pdf';
-        return $pdf->download($fileName);
+    if (!$permohonan || $permohonan->karyawan->id !== $request->user()->id || $permohonan->status !== 'Disetujui') {
+        return response()->json(['message' => 'Surat tidak ditemukan atau belum disetujui.'], 404);
     }
+
+    // Ambil ID manajer dari tabel pivot berdasarkan unit karyawan
+    $manajer_id = DB::table('manajer_unit')
+                    ->where('unit', $permohonan->karyawan->unit)
+                    ->value('manajer_id');
+
+    // Ambil data manajer dari tabel manajer menggunakan ID yang ditemukan
+    $manajer = null;
+    if ($manajer_id) {
+        $manajer = Manajer::find($manajer_id);
+    }
+
+    // Siapkan data untuk dikirim ke view
+    $data = [
+        'permohonan' => $permohonan,
+        'karyawan' => $permohonan->karyawan,
+        'tanggal_cetak' => now()->format('d F Y'),
+        'nama_manajer' => $manajer ? $manajer->nama_manajer : 'Nama Manajer Tidak Tersedia',
+        'id_manajer' => $manajer ? $manajer->id_manajer : 'ID Manajer Tidak Tersedia',
+        'jabatan_manajer' => $manajer ? $manajer->jabatan_manajer : 'Jabatan Tidak Tersedia',
+    ];
+
+    $pdf = PDF::loadView('surat-persetujuan-cuti', $data);
+
+    $fileName = 'Surat_Persetujuan_Cuti_' . $permohonan->karyawan->id_karyawan . '_' . $permohonan->tanggal_mulai . '.pdf';
+    return $pdf->download($fileName);
+}
 }

@@ -12,6 +12,10 @@
             text-align: center;
             margin-bottom: 30px;
         }
+        .header img { /* CSS baru untuk logo */
+            width: 100px; /* Sesuaikan ukuran logo */
+            margin-bottom: 10px;
+        }
         .header h1 {
             font-size: 16px;
             text-decoration: underline;
@@ -19,6 +23,15 @@
         }
         .content {
             margin-bottom: 20px;
+        }
+        .content table{
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .content table td{
+            padding: 5px;
+            border: 1px solid #ddd;
         }
         .content p {
             line-height: 1.5;
@@ -35,7 +48,7 @@
         }
         .signature {
             margin-top: 50px;
-            text-align: right;
+            text-align: center;
         }
     </style>
 </head>
@@ -64,6 +77,10 @@
                 <td>Email</td>
                 <td>: {{ $karyawan->email }}</td>
             </tr>
+            <tr>
+                <td>Tanggal Pengajuan</td>
+                <td>: {{ \Carbon\Carbon::parse($permohonan->created_at)->format('d F Y') }}</td>
+            </tr>
         </table>
         <p>Dengan ini kami menyatakan permohonan cuti Anda <strong>Disetujui</strong>.</p>
         <p>Detail cuti adalah sebagai berikut:</p>
@@ -86,6 +103,10 @@
                     <td>: {{ $permohonan->durasi }} hari</td>
                 </tr>
                 <tr>
+                    <td>Sisa Cuti Tahunan</td>
+                    <td>: {{ $karyawan->jatah_cuti_tahunan }} hari</td>
+                </tr>
+                <tr>
                     <td>Alasan Cuti</td>
                     <td>: {{ $permohonan->alasan }}</td>
                 </tr>
@@ -100,9 +121,10 @@
 
     <div class="signature">
         <p>Medan, {{ $tanggal_cetak }}</p>
-        <p>Hormat Kami,</p>
-        <p style="margin-top: 60px;">(Nama Admin)</p>
-        <p>Jabatan</p>
+        <p>Mengetahui,</p>
+        <p>MGR {{ $karyawan->unit }} Supervision</p>
+        <p style="margin-top: 60px;">{{ $nama_manajer }}</p>
+        <p>NIK. {{ $id_manajer }}</p>
     </div>
 </body>
 </html>

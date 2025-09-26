@@ -47,7 +47,7 @@
         <label for="search-name">Cari Nama Karyawan:</label>
         <input type="text" id="search-name" placeholder="Masukkan nama...">
     </div>
-    
+
     <div class="filter-group">
         <label for="start-date-filter">Filter Tanggal Mulai (Dari):</label>
         <input type="date" id="start-date-filter">
@@ -61,6 +61,9 @@
         <button id="export-excel-btn" class="action-btn">Ekspor ke Excel</button>
         <a href="/admin/karyawan" class="data-karyawan-link">
             <p>Data Karyawan</p>
+        </a>
+        <a href="/admin/manajer" class="data-karyawan-link">
+            <p>Data Manajer</p>
         </a>
     </div>
 </div>

@@ -1,0 +1,291 @@
+/* matel.css */
+
+:root {
+    --primary-color: #1a237e; /* Hijau */
+    --secondary-color: #2196F3; /* Biru */
+    --danger-color:  #ed1e28; /* Merah */
+    --warning-color: #ff9800; /* Oranye */
+    --background-color: #f8f9fa;
+    --card-background: #ffffff;
+    --text-color: #333;
+    --border-color: #e0e0e0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    background-color: #f4f4f9;
+    background-image: url("../images/background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h1, h2 {
+    color:  #ed1e28;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Card Style for Form and Table */
+.card {
+    background-color: var(--card-background);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.card-logo {
+    max-width: 200px; /* Atur lebar maksimal logo */
+    height: auto;
+    display: block; /* Pertahankan ini */
+    
+    /* UBAH BARIS MARGIN INI */
+    margin: 0 0 20px 0; /* Margin: atas (0), kanan (0), bawah (20px), kiri (0) */
+    
+    border-radius: 4px; /* Opsional: sedikit border-radius */
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+input[type="text"], select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus, select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* Buttons */
+button {
+    padding: 10px 15px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button[type="submit"] {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+button[type="submit"]:hover {
+    background-color: #43A047;
+}
+
+#resetBtn {
+    background-color: #9E9E9E;
+    color: white;
+}
+
+#resetBtn:hover {
+    background-color: #757575;
+}
+
+#addUnitBtn {
+    background-color: var(--secondary-color);
+    color: white;
+    margin-top: 10px;
+}
+#addUnitBtn:hover {
+    background-color: #1E88E5;
+}
+
+/* Unit Container Styling */
+#unit-container {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    padding: 5px;
+    border: 1px dashed var(--border-color);
+    border-radius: 4px;
+}
+
+#unit-container .unit-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+#unit-container .unit-group select {
+    flex-grow: 1;
+    margin-bottom: 0;
+    margin-right: 5px;
+}
+
+#unit-container .unit-group button {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    margin-left: 0;
+    padding: 10px 12px;
+}
+
+#unit-container .unit-group button:hover {
+    background-color:  #ed1e28;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: var(--card-background);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+th, td {
+    border: 1px solid var(--border-color);
+    padding: 12px 15px;
+    text-align: left;
+}
+
+th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Action Buttons in Table */
+.btn-edit, .btn-hapus {
+    padding: 6px 10px;
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+.btn-edit {
+    background-color: var(--warning-color);
+    color: white;
+}
+.btn-edit:hover {
+    background-color: #FB8C00;
+}
+
+.btn-hapus {
+    background-color: var(--danger-color);
+    color: white;
+}
+.btn-hapus:hover {
+    background-color:  #ed1e28;
+}
+
+/* Utility for Form Layout (Responsif) */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* Responsive Design (Mobile) */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    .card {
+        padding: 15px;
+    }
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    th, td {
+        padding: 10px;
+    }
+    
+    /* Membuat tabel menumpuk di mobile */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    tr {
+        border: 1px solid var(--border-color);
+        margin-bottom: 10px;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+        /* Tambahkan padding-bottom agar ada jarak antar baris di mobile, terutama jika ada banyak aksi */
+        padding-bottom: 15px; 
+    }
+
+    td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+        text-align: left;
+    }
+
+    /* Penyesuaian khusus untuk kolom 'Aksi' di mobile */
+    td[data-label="Aksi"] {
+        text-align: right; /* Pastikan teks tetap rata kanan */
+        display: flex; /* Gunakan flexbox untuk menata tombol */
+        justify-content: flex-end; /* Ratakan ke kanan */
+        gap: 8px; /* Tambahkan jarak antar tombol */
+        padding-top: 5px; /* Sedikit padding di atas tombol jika perlu */
+        padding-bottom: 10px; /* Padding bawah yang lebih sedikit karena gap sudah ada */
+        padding-right: 15px; /* Sesuaikan padding kanan agar tidak terlalu mepet */
+    }
+
+    /* Override td:before untuk kolom Aksi agar label tidak muncul */
+    td[data-label="Aksi"]:before {
+        content: ""; /* Sembunyikan label "Aksi" */
+        display: none; /* Pastikan tidak ada ruang yang diambil */
+    }
+
+    /* Menyesuaikan lebar input/select di unit-group agar tidak melebar penuh pada tampilan mobile */
+    #unit-container .unit-group select {
+        flex-grow: 1;
+        width: auto;
+    }
+}

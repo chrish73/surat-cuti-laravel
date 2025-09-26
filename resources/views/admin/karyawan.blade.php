@@ -51,7 +51,7 @@
                 </div>
                 <div class="form-group">
                     <label for="jatah_cuti_tahunan">Jatah Cuti Tahunan (Hari)</label>
-                    <input type="number" id="jatah_cuti_tahunan" class="form-control" min="0" required>
+                    <input type="number" id="jatah_cuti_tahunan" class="form-control" min="0" max="12" required>
                 </div>
                 <div class="form-group checkbox-group">
                     <input type="checkbox" id="is_admin">

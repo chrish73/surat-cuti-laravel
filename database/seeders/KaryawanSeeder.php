@@ -50,9 +50,18 @@ class KaryawanSeeder extends Seeder
         ]);
 
         Karyawan::create([
+            'nama' => 'Gepol',
+            'id_karyawan' => '282111',
+            'unit' => 'FBB Assurance',
+            'email' => 'satuss@gmail.com',
+            'is_admin' => false,
+            // Kolom password dikosongkan karena bersifat nullable
+        ]);
+
+        Karyawan::create([
             'nama' => 'Citra Emilia Fitriani',
             'id_karyawan' => '28220',
-            'unit' => 'BGES Assurance',
+            'unit' => 'Wifi',
             'email' => 'dua@gmail.com',
             'is_admin' => false,
             // Kolom password dikosongkan karena bersifat nullable
@@ -70,7 +79,7 @@ class KaryawanSeeder extends Seeder
         Karyawan::create([
             'nama' => 'Abdur Rahman',
             'id_karyawan' => '28204',
-            'unit' => 'BGES Assurance',
+            'unit' => 'FBB Assurance',
             'email' => 'empat@gmail.com',
             'is_admin' => false,
             // Kolom password dikosongkan karena bersifat nullable

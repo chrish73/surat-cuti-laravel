@@ -1,10 +1,15 @@
 /* Gaya Umum */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f9;
     margin: 0;
     padding: 20px;
     color: #333;
+    background-color: #f4f4f9;
+    background-image: url("../images/background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .container {
@@ -17,6 +22,18 @@ body {
 }
 
 /* Header dan Logo */
+
+.top-left-logo{
+    max-width: 250px; /* Atur lebar maksimal logo */
+    height: auto;
+    display: block; /* Pertahankan ini */
+    
+    /* UBAH BARIS MARGIN INI */
+    margin: 0 0 20px 0; /* Margin: atas (0), kanan (0), bawah (20px), kiri (0) */
+    
+    border-radius: 4px; /* Opsional: sedikit border-radius */
+}
+
 .header-container {
     display: flex;
     justify-content: space-between;
@@ -29,6 +46,8 @@ body {
 .header-container img {
     height: 40px;
 }
+
+h2 {color:  #ed1e28;}
 
 .header-container h2 {
     font-size: 24px;
@@ -281,10 +300,19 @@ footer {
         display: block;
         width: 100%;
         box-sizing: border-box;
-        text-align: right;
-        padding-left: 50%;
+        
+        /* 1. Atur nilai data di kanan */
+        text-align: right !important;; 
+        
+        /* 2. Berikan jarak LEBIH BESAR dari kiri untuk label, misalnya 65% */
+        padding-left: 30% !important;; 
+        
         position: relative;
         border-bottom: 1px solid #eee;
+        
+        /* 3. Pastikan teks yang sangat panjang turun baris */
+    word-wrap: break-word !important; 
+    overflow-wrap: break-word !important;
     }
     
     td:last-child {
@@ -296,10 +324,13 @@ footer {
         content: attr(data-label);
         position: absolute;
         left: 10px;
-        width: 45%;
+        
+        /* 4. Sesuaikan lebar label */
+        width: 60%; 
         text-align: left;
         font-weight: bold;
         color: #555;
+        padding-top: 2px;
     }
     
     /* Specific adjustments for each column */
@@ -311,6 +342,7 @@ footer {
     td:nth-of-type(6)::before { content: "Jatah Cuti"; }
     td:nth-of-type(7)::before { content: "Admin?"; }
     td:nth-of-type(8)::before { content: "Aksi"; }
+
 
     /* Button adjustments */
     .action-btn {

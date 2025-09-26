@@ -23,13 +23,22 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('permohonan', [AdminController::class, 'index']);
     Route::post('change-status', [AdminController::class, 'changeStatus']);
-    // Route::post('revert-status', [AdminController::class, 'revertStatus']); // Baris ini tidak ada di controller, saya komentari
+    // Route::post('revert-status', [AdminController::class, 'revertStatus']); // Baris ini tidak ada di controller
     Route::get('export-permohonan', [AdminController::class, 'exportToExcel']);
     Route::post('reject/{id}', [AdminController::class, 'rejectPermohonan']);
+
     // Rute API untuk admin
     Route::get('karyawan', [AdminController::class, 'getKaryawan']);
     Route::get('karyawan/{id}', [AdminController::class, 'getKaryawanById']);
     Route::post('karyawan', [AdminController::class, 'saveKaryawan']);
     Route::put('karyawan/{id}', [AdminController::class, 'saveKaryawan']);
     Route::delete('karyawan/{id}', [AdminController::class, 'deleteKaryawan']);
+
+    Route::get('manajer', [AdminController::class, 'getManajer']);
+    Route::post('manajer', [AdminController::class, 'addManajer']);
+    Route::put('manajer/{id}', [AdminController::class, 'updateManajer']);
+    Route::delete('manajer/{id}', [AdminController::class, 'deleteManajer']);
+
+        // Rute API untuk mendapatkan daftar unit
+    Route::get('units', [AdminController::class, 'getUniqueUnits']);
 });

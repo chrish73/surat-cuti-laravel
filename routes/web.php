@@ -12,12 +12,14 @@ Route::get('/admin/login', function () {
 })->name('admin.login');
 Route::get('/admin', [FrontendController::class, 'showAdminDashboard']);
 
+
+
 // Rute baru untuk CRUD Karyawan
-// Route::get('/admin/karyawan', function () {
-//     return view('admin.karyawan');
-// })->middleware('auth:sanctum');
-
-
 Route::get('/admin/karyawan', function () {
     return view('admin.karyawan');
+});
+
+// Rute baru untuk CRUD Manager
+Route::get('/admin/manajer', function (){
+    return view('admin.manajer');
 });
