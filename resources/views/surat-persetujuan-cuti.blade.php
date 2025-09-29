@@ -12,8 +12,8 @@
             text-align: center;
             margin-bottom: 30px;
         }
-        .header img { /* CSS baru untuk logo */
-            width: 100px; /* Sesuaikan ukuran logo */
+        .header img {
+            width: 100px;
             margin-bottom: 10px;
         }
         .header h1 {
@@ -33,18 +33,24 @@
             padding: 5px;
             border: 1px solid #ddd;
         }
-        .content p {
-            line-height: 1.5;
-            margin-bottom: 10px;
-        }
         .details table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            table-layout: fixed; /* Penting: agar kolom tidak melebar */
         }
         .details table td {
             padding: 5px;
             border: 1px solid #ddd;
+            word-wrap: break-word; /* Memastikan teks membungkus */
+            white-space: pre-wrap; /* Memastikan baris baru dipertahankan */
+        }
+        .details table td:first-child {
+            width: 150px; /* Lebar kolom kiri (label) tetap */
+        }
+        .content p {
+            line-height: 1.5;
+            margin-bottom: 10px;
         }
         .signature {
             margin-top: 50px;
@@ -102,10 +108,12 @@
                     <td>Durasi</td>
                     <td>: {{ $permohonan->durasi }} hari</td>
                 </tr>
+                @if ($permohonan->jenis_cuti === 'Cuti Tahunan')
                 <tr>
                     <td>Sisa Cuti Tahunan</td>
                     <td>: {{ $karyawan->jatah_cuti_tahunan }} hari</td>
                 </tr>
+                @endif
                 <tr>
                     <td>Alasan Cuti</td>
                     <td>: {{ $permohonan->alasan }}</td>
